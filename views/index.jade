@@ -1,7 +1,8 @@
 extends layout
 
 block content
-  h1 Quiz Builder
-  h3 Welcome!  Feel free to take some quizzes or make your own!
+  div.page-header
+    h1 Quiz Builder 
+      small Welcome!  Feel free to take some quizzes or make your own!
   form(action='/quiz/new' method='get')
-    button.button.button-primary(type='submit') Make a New Quiz
+    button.btn.btn-primary(type='submit') Make a New Quiz

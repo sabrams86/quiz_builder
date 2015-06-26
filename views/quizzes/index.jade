@@ -1,0 +1,14 @@
+extends ./../layout
+
+block content
+  h1 Your quizzes
+  table.table.table-hover
+    thead
+      tr
+        th Quiz
+        th Categories
+    tbody
+      each quiz in quizzes
+        tr
+          td= quiz.name
+          td= quiz.categories
