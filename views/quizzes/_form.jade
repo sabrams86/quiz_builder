@@ -1,11 +1,38 @@
-div.form-group.row
-  label.col-sm-1.control-label(for='name') Name
-  div.col-sm-5
-    input#name.form-control.col-sm-5(type='text' name='name')
-div.form-group.row
-  label.col-sm-1.control-label(for='categories') Categories
-  div.col-sm-5
-    input#categories.form-control.col-sm-5(type='text' name='categories')
-div.form-group.row
-  div.col-sm-offset-2.col-sm-5
-    input.btn.btn-default(type='submit' value='Create')
+div.row
+  div.col-md-4
+    div.form-group.row
+    div.form-group.row
+    div.form-group.row
+      label.col-md-3.control-label(for='name') Quiz Name
+      div.col-md-9
+        input#name.form-control.col-md-9(type='text' name='name')  
+    div.form-group.row    
+      label.col-md-3.control-label(for='categories') Categories
+      div.col-md-7
+        input#categories.form-control.col-md-7(type='text' name='categories')
+      button#add-category.col-md-2.btn.btn-sml(type='button') Add
+    div#category-list.form-group.row    
+  div.col-md-1
+  div.col-md-7
+    div.form-group.row
+      div.col-md-12
+        input.btn.btn-primary.btn-block.btn-lg(type='submit' value='Create')
+    div.form-group.row
+      h3 Questions
+      div.form-group.row
+        label.col-md-6.control-label(for='question-type') Question Type
+        label.col-md-6.control-label(for='answer') Answer
+      div.form-group.row
+        div.col-md-6
+          select#question-type.form-control.col-md-8(type='text' name='question-type')
+            option(name='image-upload') Image Upload
+            option(name='image-url') Image URL
+            option(name='plain-text') Plain Text
+      div.form-group.row   
+        div.col-md-6
+          input#categories.form-control.col-md-6.hidden(type='file' name='question')
+          input#categories.form-control.col-md-6.hidden(type='text' name='answer') 
+          textarea#categories.form-control.col-md-6(name='answer')
+        div.col-md-6
+          input#categories.form-control.col-md-6(type='text' name='answer')
+        

@@ -1,6 +1,7 @@
 extends ./../layout
 
 block content
-  h1 Customize your quiz
-  form(action='/quizzes', method='post')
-    include _form
+  h1.row.col-md-12 Customize your quiz
+  div.container
+    form(action='/quizzes', method='post')
+      include _form
