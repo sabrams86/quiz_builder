@@ -16,7 +16,7 @@ div.row
   div.col-md-7
     div.form-group.row
       div.col-md-12
-        input.btn.btn-primary.btn-block.btn-lg(type='submit' value='Create')
+        input#submit.btn.btn-primary.btn-block.btn-lg(type='submit' value='Create')
     div.form-group.row
       h3 Questions
       div.form-group.row
@@ -25,14 +25,17 @@ div.row
       div.form-group.row
         div.col-md-6
           select#question-type.form-control.col-md-8(type='text' name='question-type')
-            option(name='image-upload') Image Upload
-            option(name='image-url') Image URL
-            option(name='plain-text') Plain Text
+            option(value='image-upload') Image Upload
+            option(value='image-url') Image URL
+            option(value='plain-text') Plain Text
+        div.col-md-6  
+          button#add-question.col-md-2.btn.btn-sml(type='button') Add
       div.form-group.row   
         div.col-md-6
-          input#categories.form-control.col-md-6.hidden(type='file' name='question')
-          input#categories.form-control.col-md-6.hidden(type='text' name='answer') 
-          textarea#categories.form-control.col-md-6(name='answer')
+          input#file-field.form-control.col-md-6(type='file' name='question')
+          input#url-field.form-control.col-md-6.hidden(type='text' name='answer') 
+          textarea#text-field.form-control.col-md-6.hidden(name='answer')
         div.col-md-6
-          input#categories.form-control.col-md-6(type='text' name='answer')
-        
+          input#answer.form-control.col-md-6(type='text' name='answer')
+        div#question-list.row
+      

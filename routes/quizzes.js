@@ -23,8 +23,33 @@ router.get('/quiz/new', function(req, res, next) {
 //** CREATE **
 //************
 router.post('/quizzes', function(req, res, next) {
-  quizzes.insert({name: req.body.name, categories: req.body.categories});
+  var catArray = req.body.allcatagories.split(',');
+  quizzes.insert({name: req.body.name, categories: catArray});
   res.redirect('/quizzes');
 });
+
+/*
+quiz document structure:
+
+{
+name: 'super quiz',
+categories: ['games', 'jquery', 'gschool'];
+questions: [
+            {
+            type: 'url';
+            image-url: 'asdf.com'
+            answer: 'stuff'
+          },
+          {
+            type: 'text';
+            question: 'stuff about stuff?'
+            answer: 'stuff'
+          }
+        ],
+
+}
+
+*/
+
 
 module.exports = router;

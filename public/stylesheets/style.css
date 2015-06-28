@@ -6,3 +6,19 @@ body {
 a {
   color: #00B7FF;
 }
+
+.delete {
+  cursor: pointer;
+  float: right;
+}
+
+.category-item{
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  color: grey;
+  padding: 5px;
+  border: 1px solid lightgrey;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}

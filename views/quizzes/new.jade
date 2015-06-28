@@ -3,5 +3,5 @@ extends ./../layout
 block content
   h1.row.col-md-12 Customize your quiz
   div.container
-    form(action='/quizzes', method='post')
+    form#new_quiz(action='/quizzes', method='post')
       include _form
