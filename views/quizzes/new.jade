@@ -4,5 +4,10 @@ block content
   h1.row.col-md-12 Customize your quiz
   a(href='/') Back to the Home Page
   div.container
+    if errors
+      include _errors
     form#new_quiz(action='/quizzes', method='post')
       include _form
+      
+block javascript
+  script(src="/javascripts/new-quiz.js" type="text/javascript")

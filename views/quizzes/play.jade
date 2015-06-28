@@ -1,0 +1,16 @@
+extends ./../layout
+
+block content
+  div.container.center
+    h1= quiz.name
+    div.game-area
+      div.question-area= quiz.questions[0].question
+      div.row
+      div.answer-area
+        p
+          input(type='text' name='guess' autofocus)
+        p
+          button.btn.btn-primary.btn-sml(type='submit' name='button') Submit
+      
+block javascript
+  script(src='/javascripts/play.js' type='text/javascript')

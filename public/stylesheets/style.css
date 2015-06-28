@@ -32,3 +32,26 @@ a {
   clear: both;
   display: block;
 }
+
+#errors{
+  color: red;
+}
+.center{
+  text-align: center;
+}
+.question-area {
+  display: inline-block;
+  text-align: center;
+  height: 300px;
+  width: 300px;
+  border-radius: 20px;
+  background-color: lightgrey;
+}
+
+.answer-area {
+  display: inline-block;
+  height: 100px;
+  width: 300px;
+  border-radius: 20px;
+  background-color: lightgrey;
+}
