@@ -23,6 +23,7 @@ router.get('/quiz/new', function(req, res, next) {
 //** CREATE **
 //************
 router.post('/quizzes', function(req, res, next) {
+  console.log(req.files.file);
   var catArray = req.body.allcatagories.split('|');
   var questionArray = req.body.allquestions.split('|');
   questionArray = questionArray.map(function(e){

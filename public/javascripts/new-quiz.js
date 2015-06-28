@@ -76,13 +76,12 @@ $(document).ready(function() {
   $('#question-list').on('click', '.delete', function(){
     this.parentNode.parentNode.remove();
   });
-
+  //when the form is submitted, also create two new input fields and include the category and question arrays
   $('#submit').click(function(){
     categoryField = document.createElement('input');
     categoryField.type = 'text';
     categoryField.name = 'allcatagories';
     categoryField.value = categoryArray.join('|');
-
     questionField = document.createElement('input');
     questionField.type = 'text';
     questionField.name = 'allquestions';
