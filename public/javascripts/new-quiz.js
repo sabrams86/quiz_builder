@@ -70,6 +70,7 @@ $(document).ready(function() {
       'question': questionVal,
       'answer': $('#answer').val(),
     });
+    console.log(questionArray);
   });
 
   $('#question-list').on('click', '.delete', function(){
@@ -80,8 +81,18 @@ $(document).ready(function() {
     categoryField = document.createElement('input');
     categoryField.type = 'text';
     categoryField.name = 'allcatagories';
-    categoryField.value = categoryArray;
+    categoryField.value = categoryArray.join('|');
+
+    questionField = document.createElement('input');
+    questionField.type = 'text';
+    questionField.name = 'allquestions';
+    questionField.value = questionArray.map(function(e){
+      return JSON.stringify(e);
+    }).join('|');
+    console.log(questionField.value);
+
     $('#new_quiz').append(categoryField);
+    $('#new_quiz').append(questionField);
     $('#new_quiz').submit();
   });
 

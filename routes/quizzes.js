@@ -23,8 +23,12 @@ router.get('/quiz/new', function(req, res, next) {
 //** CREATE **
 //************
 router.post('/quizzes', function(req, res, next) {
-  var catArray = req.body.allcatagories.split(',');
-  quizzes.insert({name: req.body.name, categories: catArray});
+  var catArray = req.body.allcatagories.split('|');
+  var questionArray = req.body.allquestions.split('|');
+  questionArray = questionArray.map(function(e){
+    return JSON.parse(e);
+  });
+  quizzes.insert({name: req.body.name, categories: catArray, questions: questionArray});
   res.redirect('/quizzes');
 });
 

@@ -6,9 +6,12 @@ block content
     thead
       tr
         th Quiz
-        th Categories
+        th Categories        
     tbody
       each quiz in quizzes
         tr
           td= quiz.name
           td= quiz.categories
+          each question in quiz.questions
+            td= question.question
+            td= question.answer
