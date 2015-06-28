@@ -9,7 +9,12 @@ var Validator = require('./../lib/validator');
 //*********
 router.get('/quizzes', function(req, res, next) {
   quizzes.find({}, {}, function(err, docs){
-    res.render('quizzes', {quizzes: docs});
+    var is_ajax_request = req.xhr;
+    if (is_ajax_request) {
+      res.json(docs);
+    } else {
+      res.render('quizzes', {quizzes: docs});
+    }
   });
 });
 
@@ -48,7 +53,12 @@ router.post('/quizzes', function(req, res, next) {
 //*********
 router.get('/quizzes/:id', function(req, res, next) {
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/show', {quiz: doc});
+    var is_ajax_request = req.xhr;
+    if (is_ajax_request) {
+      res.json(doc);
+    } else {
+      res.render('quizzes/show', {quiz: doc});
+    }
   });
 });
 

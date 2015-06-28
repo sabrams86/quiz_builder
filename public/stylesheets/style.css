@@ -46,6 +46,7 @@ a {
   width: 300px;
   border-radius: 20px;
   background-color: lightgrey;
+  padding-top: 20px;
 }
 
 .answer-area {
@@ -54,4 +55,18 @@ a {
   width: 300px;
   border-radius: 20px;
   background-color: lightgrey;
+  margin-top: 20px;
+  padding-top: 10px;
+}
+
+.question {
+  display: inline-block;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.quiz-thumbnail {
+  max-width: 200px;
+  max-height: 150px;
 }
