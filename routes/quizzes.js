@@ -28,9 +28,20 @@ router.post('/quizzes', function(req, res, next) {
   questionArray = questionArray.map(function(e){
     return JSON.parse(e);
   });
-  quizzes.insert({name: req.body.name, categories: catArray, questions: questionArray});
-  res.redirect('/quizzes');
+  quizzes.insert({name: req.body.name, categories: catArray, questions: questionArray}, function(err, doc){
+    res.redirect('/quizzes/'+doc._id);
+  });
 });
+
+//*********
+//** NEW **
+//*********
+router.get('/quizzes/:id', function(req, res, next) {
+  quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
+    res.render('quizzes/show', {quiz: doc});
+  });
+});
+
 
 /*
 quiz document structure:

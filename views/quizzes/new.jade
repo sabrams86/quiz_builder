@@ -2,6 +2,7 @@ extends ./../layout
 
 block content
   h1.row.col-md-12 Customize your quiz
+  a(href='/') Back to the Home Page
   div.container
     form#new_quiz(action='/quizzes', method='post')
       include _form

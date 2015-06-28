@@ -2,6 +2,10 @@ extends ./../layout
 
 block content
   h1 Your quizzes
+  p
+    a(href='/') Back to the Home Page
+  p
+    a(href='/quizzes/new') Create a New Quiz
   table.table.table-hover
     thead
       tr
@@ -10,8 +14,6 @@ block content
     tbody
       each quiz in quizzes
         tr
-          td= quiz.name
+          td
+            a(href='/quizzes/'+quiz._id)= quiz.name
           td= quiz.categories
-          each question in quiz.questions
-            td= question.question
-            td= question.answer

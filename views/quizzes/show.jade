@@ -1,0 +1,21 @@
+extends ./../layout
+
+block content
+  h1= quiz.name
+  a(href='/') Back to the Home Page
+  h3 Categories
+  ul 
+    each category in quiz.categories
+      li= category
+  
+  h3 Questions
+  table.table.table-hover
+    thead
+      tr
+        th Question
+        th Answer
+    tbody
+      each question in quiz.questions
+        tr
+          td= question.question
+          td= question.answer
