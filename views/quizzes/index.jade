@@ -11,9 +11,18 @@ block content
       tr
         th Quiz
         th Categories        
+        th Options
     tbody
       each quiz in quizzes
         tr
           td
             a(href='/quizzes/'+quiz._id)= quiz.name
           td= quiz.categories
+          td.options
+            form(action='/quizzes/'+quiz._id method='get')
+              button.btn.btn-primary.btn-sml.inline(type='submit') Show
+            form(action='/quizzes/'+quiz._id+'/edit' method='get')
+              button.btn.btn-success.btn-sml.inline(type='submit') Edit              
+            form(action='/quizzes/'+quiz._id+'/delete' method='post')
+              button.btn.btn-danger.btn-sml.inline(type='submit') Delete
+            

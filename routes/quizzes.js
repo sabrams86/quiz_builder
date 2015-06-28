@@ -15,7 +15,7 @@ router.get('/quizzes', function(req, res, next) {
 //*********
 //** NEW **
 //*********
-router.get('/quiz/new', function(req, res, next) {
+router.get('/quizzes/new', function(req, res, next) {
   res.render('quizzes/new');
 });
 
@@ -23,7 +23,7 @@ router.get('/quiz/new', function(req, res, next) {
 //** CREATE **
 //************
 router.post('/quizzes', function(req, res, next) {
-  console.log(req.files.file);
+  console.log(req.files);
   var catArray = req.body.allcatagories.split('|');
   var questionArray = req.body.allquestions.split('|');
   questionArray = questionArray.map(function(e){
@@ -43,6 +43,35 @@ router.get('/quizzes/:id', function(req, res, next) {
   });
 });
 
+//************
+//** EDIT   **
+//************
+router.get('/quizzes/:id/edit', function(req, res, next) {
+  quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
+    res.render('quizzes/edit', {quiz: doc});
+  });
+});
+
+//************
+//** UPDATE **
+//************
+router.post('/quizzes/:id', function(req, res, next) {
+  var catArray = req.body.allcatagories.split('|');
+  var questionArray = req.body.allquestions.split('|');
+  questionArray = questionArray.map(function(e){
+    return JSON.parse(e);
+  });
+  quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, categories: catArray, questions: questionArray}});
+  res.redirect('/quizzes/'+doc._id);
+});
+
+//************
+//** DELETE **
+//************
+router.post('/quizzes/:id/delete', function(req, res, next) {
+  quizzes.remove({_id: req.params.id});
+  res.redirect('/quizzes');
+});
 
 /*
 quiz document structure:

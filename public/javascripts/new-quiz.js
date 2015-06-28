@@ -22,7 +22,6 @@ $(document).ready(function() {
     categoryArray = categoryArray.filter(function(e){
       return e != text;
     });
-    console.log(categoryArray);
     this.parentNode.remove();
   });
   //update the form field for questions based on the select element value
@@ -41,14 +40,14 @@ $(document).ready(function() {
       $('#text-field').removeClass('hidden');
     }
   });
-
+  //add qeustions below the question field
   $('#add-question').click(function(){
     var newRow = document.createElement('div');
     var questionCol = document.createElement('div');
     var answerCol = document.createElement('div');
     var deleteButton = document.createElement('div');
     deleteButton.className = 'fa fa-times fa-2x delete';
-    newRow.className = 'row form-group';
+    newRow.className = 'row form-group block question-div';
     questionCol.className = 'col-md-6';
     answerCol.className = 'col-md-6';
     if ($('#question-type').val() === 'image-upload') {
@@ -64,16 +63,23 @@ $(document).ready(function() {
     newRow.appendChild(questionCol);
     newRow.appendChild(answerCol);
     $('#question-list').prepend(newRow);
-
     questionArray.push({
       'type': $('#question-type').val(),
       'question': questionVal,
       'answer': $('#answer').val(),
     });
-    console.log(questionArray);
+    $('#text-field').val('');
+    $('#url-field').val('');
+    $('#file-field').val('');
+    $('#answer').val('');
   });
 
   $('#question-list').on('click', '.delete', function(){
+    var text = this.parentNode.parentNode.childNodes[0].textContent
+    console.log(text);
+    questionArray = questionArray.filter(function(e){
+      return e.question != text;
+    });
     this.parentNode.parentNode.remove();
   });
   //when the form is submitted, also create two new input fields and include the category and question arrays
