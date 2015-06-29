@@ -1,6 +1,18 @@
 extends layout
 
 block content
+  div.login-form
+    a.right(href='/users/new') Register as a new User
+    form(action='/users/login' method='post')
+      p
+        label.col-md-6(for='email') Email
+        input#email.col-md-6(type='text' name='email')
+      p
+        label.col-md-6(for='password') Password
+        input#password.col-md-6(type='password' name='password')
+      p
+        div.col-md-6
+        input#login.btn.btn-xs.btn-success(type='submit' value='Login')
   div.page-header
     h1 Quiz Builder 
       small Welcome!  Feel free to take some quizzes or make your own!

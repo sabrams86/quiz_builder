@@ -94,3 +94,19 @@ a {
   display: block;
   clear: both;
 }
+.login-form{
+
+  display: inline-block;
+  float: right;
+}
+.login-form label{
+  font-weight: normal;
+  text-align: right;
+}
+.right{
+  text-align: right;
+  float: right;
+}
+.new-user-form label{
+  text-align: right;
+}
