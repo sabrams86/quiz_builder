@@ -5,13 +5,19 @@ div.row
     div.form-group.row
       label.col-md-3.control-label(for='name') Quiz Name
       div.col-md-9
-        input#name.form-control.col-md-9(type='text' name='name' value=(quiz ? quiz.name : ''))  
+        input#name.form-control.col-md-9(type='text' name='name' value=(name ? name : ''))
+    div.form-group.row
+      label.col-md-3.control-label(for='name') Description
+      div.col-md-9
+        textarea#name.form-control.col-md-9(type='text' name='description')= description  
     div.form-group.row    
       label.col-md-3.control-label(for='categories') Categories
       div.col-md-7
         input#categories.form-control.col-md-7(type='text' name='categories')
       button#add-category.col-md-2.btn.btn-sml(type='button') Add
-    div#category-list.form-group.row    
+    div#category-list.form-group.row   
+      if categories
+        include _categories
   div.col-md-1
   div.col-md-7
     div.form-group.row
@@ -38,4 +44,6 @@ div.row
         div.col-md-6
           input#answer.form-control.col-md-6(type='text' name='answer')
         div#question-list.row
+          if questions
+            include _questions
       

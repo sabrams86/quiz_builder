@@ -33,6 +33,7 @@ router.post('/quizzes', function(req, res, next) {
   var questionArray = req.body.allquestions.split('|');
   var validate = new Validator;
   validate.exists(req.body.name, 'Please enter a quiz name');
+  validate.exists(req.body.description, 'Please enter a description for your quiz')
   validate.exists(questionArray, 'You can\'t make a quiz without questions');
   validate.exists(catArray, 'Please enter a Category');
   validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
@@ -40,11 +41,16 @@ router.post('/quizzes', function(req, res, next) {
     questionArray = questionArray.map(function(e){
       return JSON.parse(e);
     });
-    quizzes.insert({name: req.body.name, categories: catArray, questions: questionArray}, function(err, doc){
+    quizzes.insert({name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray}, function(err, doc){
       res.redirect('/quizzes/'+doc._id);
     });
   } else {
-    res.render('quizzes/new', {errors: validate._errors} )
+    if(questionArray.length > 1){
+      questionArray = questionArray.map(function(e){
+        return JSON.parse(e);
+      });
+    }
+    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray} )
   }
 });
 
@@ -67,7 +73,7 @@ router.get('/quizzes/:id', function(req, res, next) {
 //************
 router.get('/quizzes/:id/edit', function(req, res, next) {
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/edit', {quiz: doc});
+    res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, categories: doc.categories, questions: doc.questions});
   });
 });
 
@@ -80,8 +86,8 @@ router.post('/quizzes/:id', function(req, res, next) {
   questionArray = questionArray.map(function(e){
     return JSON.parse(e);
   });
-  quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, categories: catArray, questions: questionArray}});
-  res.redirect('/quizzes/'+doc._id);
+  quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray}});
+  res.redirect('/quizzes/'+req.params.id);
 });
 
 //************
@@ -97,7 +103,7 @@ router.post('/quizzes/:id/delete', function(req, res, next) {
 //************
 router.get('/quizzes/:id/play', function(req, res, next) {
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/play', {quiz: doc});
+    res.render('quizzes/play', {name: doc.name, description: doc.description, categories: doc.categories, questions: doc.questions});
   });
 });
 

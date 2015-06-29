@@ -1,0 +1,6 @@
+for question in questions
+  div.row.form-group.block.question-div
+    div.col-md-6.ques-type.hidden= question.type
+    div.col-md-6.ques= question.question
+    div.col-md-6.answ= question.answer
+      div.fa.fa-times.fa-2x.delete

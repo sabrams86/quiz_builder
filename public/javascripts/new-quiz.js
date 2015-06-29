@@ -4,13 +4,13 @@ $(document).ready(function() {
   var questionField;
   var categoryArray = [];
   var categoryField;
-
+  //add categories below the category field
   $('#add-category').click(function(){
     var newCat = document.createElement('div');
     var deleteButton = document.createElement('div');
     deleteButton.className = 'fa fa-times fa-2x delete';
     newCat.innerHTML = $('#categories').val();
-    categoryArray.push($('#categories').val());
+    // categoryArray.push($('#categories').val());
     newCat.appendChild(deleteButton);
     newCat.className = 'col-md-12 category-item';
     $('#category-list').prepend(newCat);
@@ -44,12 +44,15 @@ $(document).ready(function() {
   $('#add-question').click(function(){
     var newRow = document.createElement('div');
     var questionCol = document.createElement('div');
+    var questionType = document.createElement('div');
     var answerCol = document.createElement('div');
     var deleteButton = document.createElement('div');
     deleteButton.className = 'fa fa-times fa-2x delete';
     newRow.className = 'row form-group block question-div';
-    questionCol.className = 'col-md-6';
-    answerCol.className = 'col-md-6';
+    questionCol.className = 'col-md-6 ques';
+    answerCol.className = 'col-md-6 answ';
+    questionType.className = 'hidden ques-type';
+    questionType.innerHTML = $('#question-type').val();
     if ($('#question-type').val() === 'image-upload') {
       var questionVal = $('#file-field').val();
     } else if ($('#question-type').val() === 'image-url') {
@@ -60,14 +63,15 @@ $(document).ready(function() {
     questionCol.innerHTML = questionVal;
     answerCol.innerHTML = $('#answer').val();
     answerCol.appendChild(deleteButton);
+    newRow.appendChild(questionType);
     newRow.appendChild(questionCol);
     newRow.appendChild(answerCol);
     $('#question-list').prepend(newRow);
-    questionArray.push({
-      'type': $('#question-type').val(),
-      'question': questionVal,
-      'answer': $('#answer').val(),
-    });
+    // questionArray.push({
+    //   'type': $('#question-type').val(),
+    //   'question': questionVal,
+    //   'answer': $('#answer').val(),
+    // });
     $('#text-field').val('');
     $('#url-field').val('');
     $('#file-field').val('');
@@ -84,6 +88,21 @@ $(document).ready(function() {
   });
   //when the form is submitted, also create two new input fields and include the category and question arrays
   $('#submit').click(function(){
+
+    $('.category-item').each(function(e){
+      categoryArray.push(this.textContent);
+    });
+    console.log(categoryArray);
+
+    $('.question-div').each(function(e){
+      questionArray.push({
+        'type': this.children[0].textContent,
+        'question': this.children[1].textContent,
+        'answer': this.children[2].textContent,
+      });
+    });
+    console.log(questionArray);
+
     categoryField = document.createElement('input');
     categoryField.type = 'text';
     categoryField.name = 'allcatagories';
@@ -94,7 +113,6 @@ $(document).ready(function() {
     questionField.value = questionArray.map(function(e){
       return JSON.stringify(e);
     }).join('|');
-    console.log(questionField.value);
 
     $('#new_quiz').append(categoryField);
     $('#new_quiz').append(questionField);

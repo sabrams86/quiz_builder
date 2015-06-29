@@ -3,6 +3,8 @@ extends ./../layout
 block content
   h1= quiz.name
   a(href='/') Back to the Home Page
+  h3 Description
+  p= quiz.description
   h3 Categories
   ul 
     each category in quiz.categories
