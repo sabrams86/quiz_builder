@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(multer({dest: './uploads/'}));
 
 app.use('/', routes);
-app.use('/users', users);
+app.use('/', users);
 app.use('/', quizzes);
 
 // catch 404 and forward to error handler
