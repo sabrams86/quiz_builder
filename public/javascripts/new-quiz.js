@@ -6,15 +6,36 @@ $(document).ready(function() {
   var categoryField;
   //add categories below the category field
   $('#add-category').click(function(){
-    var newCat = document.createElement('div');
-    var deleteButton = document.createElement('div');
-    deleteButton.className = 'fa fa-times fa-2x delete';
-    newCat.innerHTML = $('#categories').val();
-    // categoryArray.push($('#categories').val());
-    newCat.appendChild(deleteButton);
-    newCat.className = 'col-md-12 category-item';
-    $('#category-list').prepend(newCat);
-    $('#categories').val('');
+    //check to make sure category doesn't already exist
+    $('.error').remove();
+    var check = 0;
+    var existingCategories = document.getElementsByClassName('category-item');
+    for (var i = 0; i < existingCategories.length; i++){
+      if ($('#categories').val().toLowerCase() === existingCategories[i].textContent.toLowerCase()) {
+        check = 1;
+        break;
+      }
+    }
+    //if it doesn't exist, add it to the list
+    if (check === 0) {
+      var newCat = document.createElement('div');
+      var deleteButton = document.createElement('div');
+      deleteButton.className = 'fa fa-times fa-2x delete';
+      newCat.innerHTML = $('#categories').val();
+      // categoryArray.push($('#categories').val());
+      newCat.appendChild(deleteButton);
+      newCat.className = 'col-md-12 category-item';
+      $('#category-list').prepend(newCat);
+      $('#categories').val('');
+      //if it does exist, show an error message
+    } else {
+      var categoryError = document.createElement('div');
+      categoryError.className = 'error';
+      var catError = document.createElement('p');
+      catError.innerHTML = 'Category already entered, please enter a different category';
+      categoryError.appendChild(catError);
+      $('h1').after(categoryError);
+    }
   });
   //remove categories from the list on clicking the delete button
   $('#category-list').on('click', '.delete', function(cat){
@@ -40,42 +61,65 @@ $(document).ready(function() {
       $('#text-field').removeClass('hidden');
     }
   });
-  //add qeustions below the question field
+  //add questions below the question field
   $('#add-question').click(function(){
-    var newRow = document.createElement('div');
-    var questionCol = document.createElement('div');
-    var questionType = document.createElement('div');
-    var answerCol = document.createElement('div');
-    var deleteButton = document.createElement('div');
-    deleteButton.className = 'fa fa-times fa-2x delete';
-    newRow.className = 'row form-group block question-div';
-    questionCol.className = 'col-md-6 ques';
-    answerCol.className = 'col-md-6 answ';
-    questionType.className = 'hidden ques-type';
-    questionType.innerHTML = $('#question-type').val();
-    if ($('#question-type').val() === 'image-upload') {
-      var questionVal = $('#file-field').val();
-    } else if ($('#question-type').val() === 'image-url') {
-      var questionVal = $('#url-field').val();
-    } else if ($('#question-type').val() === 'plain-text') {
-      var questionVal = $('#text-field').val();
+
+    $('.error').remove();
+    var check = 0;
+    var existingQuestions = document.getElementsByClassName('ques');
+    for (var i = 0; i < existingQuestions.length; i++){
+      var input = '';
+      if ($('#question-type').val() === 'image-upload') {
+        var input = $('#file-field').val();
+      } else if ($('#question-type').val() === 'image-url') {
+        var input = $('#url-field').val();
+      } else if ($('#question-type').val() === 'plain-text') {
+        var input = $('#text-field').val();
+      }
+      if (input.toLowerCase() === existingQuestions[i].textContent.toLowerCase()) {
+        check = 1;
+        break;
+      }
     }
-    questionCol.innerHTML = questionVal;
-    answerCol.innerHTML = $('#answer').val();
-    answerCol.appendChild(deleteButton);
-    newRow.appendChild(questionType);
-    newRow.appendChild(questionCol);
-    newRow.appendChild(answerCol);
-    $('#question-list').prepend(newRow);
-    // questionArray.push({
-    //   'type': $('#question-type').val(),
-    //   'question': questionVal,
-    //   'answer': $('#answer').val(),
-    // });
-    $('#text-field').val('');
-    $('#url-field').val('');
-    $('#file-field').val('');
-    $('#answer').val('');
+    //if it doesn't exist, add it to the list
+    if (check === 0) {
+      var newRow = document.createElement('div');
+      var questionCol = document.createElement('div');
+      var questionType = document.createElement('div');
+      var answerCol = document.createElement('div');
+      var deleteButton = document.createElement('div');
+      deleteButton.className = 'fa fa-times fa-2x delete';
+      newRow.className = 'row form-group block question-div';
+      questionCol.className = 'col-md-6 ques';
+      answerCol.className = 'col-md-6 answ';
+      questionType.className = 'hidden ques-type';
+      questionType.innerHTML = $('#question-type').val();
+      if ($('#question-type').val() === 'image-upload') {
+        var questionVal = $('#file-field').val();
+      } else if ($('#question-type').val() === 'image-url') {
+        var questionVal = $('#url-field').val();
+      } else if ($('#question-type').val() === 'plain-text') {
+        var questionVal = $('#text-field').val();
+      }
+      questionCol.innerHTML = questionVal;
+      answerCol.innerHTML = $('#answer').val();
+      answerCol.appendChild(deleteButton);
+      newRow.appendChild(questionType);
+      newRow.appendChild(questionCol);
+      newRow.appendChild(answerCol);
+      $('#question-list').prepend(newRow);
+      $('#text-field').val('');
+      $('#url-field').val('');
+      $('#file-field').val('');
+      $('#answer').val('');
+    } else {
+      var questionError = document.createElement('div');
+      questionError.className = 'error';
+      var quesError = document.createElement('p');
+      quesError.innerHTML = 'That question already exists, please enter a new one';
+      questionError.appendChild(quesError);
+      $('h1').after(questionError);
+    }
   });
 
   $('#question-list').on('click', '.delete', function(){

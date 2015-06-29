@@ -88,3 +88,9 @@ a {
   display: block;
   height: 10px;
 }
+
+.error {
+  color: red;
+  display: block;
+  clear: both;
+}
