@@ -15,6 +15,7 @@ router.get('/users', function(req, res, next) {
 router.post('/users/login', function(req, res, next) {
   users.findOne({email: req.body.email}, {}, function(err, doc){
     if(doc && bcrypt.compareSync(req.body.password, doc.password)){
+      res.cookie('user_id', doc._id);
       res.redirect('/quizzes');
     } else {
       res.redirect('/');

@@ -8,7 +8,8 @@ var Validator = require('./../lib/validator');
 //**INDEX**
 //*********
 router.get('/quizzes', function(req, res, next) {
-  quizzes.find({}, {}, function(err, docs){
+  userId = req.cookies.user_id;
+  quizzes.find({user_id: userId}, {}, function(err, docs){
     var is_ajax_request = req.xhr;
     if (is_ajax_request) {
       res.json(docs);
@@ -31,6 +32,7 @@ router.get('/quizzes/new', function(req, res, next) {
 router.post('/quizzes', function(req, res, next) {
   var catArray = req.body.allcatagories.split('|');
   var questionArray = req.body.allquestions.split('|');
+  var userId = req.cookies.user_id;
   var validate = new Validator;
   validate.exists(req.body.name, 'Please enter a quiz name');
   validate.exists(req.body.description, 'Please enter a description for your quiz')
@@ -41,7 +43,7 @@ router.post('/quizzes', function(req, res, next) {
     questionArray = questionArray.map(function(e){
       return JSON.parse(e);
     });
-    quizzes.insert({name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray}, function(err, doc){
+    quizzes.insert({name: req.body.name, description: req.body.description, user_id: userId, categories: catArray, questions: questionArray}, function(err, doc){
       res.redirect('/quizzes/'+doc._id);
     });
   } else {
