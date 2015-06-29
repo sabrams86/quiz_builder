@@ -5,7 +5,11 @@ block content
     h1 Quiz Builder 
       small Welcome!  Feel free to take some quizzes or make your own!
   form(action='/quizzes/new' method='get')
-    button.btn.btn-primary(type='submit') Make a New Quiz
-  p
-  p
-    a(href='/quizzes') Or Check Out Existing Quizzes
+    button.btn.btn-primary.btn-block.btn-lg(type='submit') Make a New Quiz
+  div.clear
+  div.container
+    each quiz in quizzes
+      a(href='/quizzes/'+quiz._id+'/play')
+        div.quiz
+          h4= quiz.name
+          div.quizdesc= quiz.description
