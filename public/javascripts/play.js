@@ -23,11 +23,12 @@ $(document).ready(function() {
     </form></div>';
   // set a variable to the html needed to generate a form that will reload the page when the user wants to play again
   var playAgain = '<form action="index.html" method="get"><input class="retry" type="submit" name="again" value="Play Again!"></form>';
-
 //*********************************************
 //**   Start the game when user clicks start **
 //*********************************************
   $('#start').click(function(){
+    var penalty = 0;
+    var startTime = new Date();
     event.preventDefault();
     var quizId = getId();
     var xhr = new XMLHttpRequest;
@@ -36,6 +37,11 @@ $(document).ready(function() {
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.addEventListener('load', function(){
       var quizData = JSON.parse(xhr.response);
+      if (quizData.time_penalties_enabled){
+        var penaltyBump = Number(quizData.time_penalty);
+      } else {
+        var penaltyBump = 0;
+      }
       var score = 0;
       var maxScore = quizData.questions.length;
       //shuffle array of questions
@@ -76,6 +82,7 @@ $(document).ready(function() {
             $('.question-area').append(scoreBoard);
             //if user is wrong
           } else {
+            penalty += penaltyBump;
             $('.message').remove();
             $('.score').remove();
             $('.question-area').prepend(loser);
@@ -98,6 +105,10 @@ $(document).ready(function() {
           $('.guess').focus();
           //if there are no more questions, evaluate and show end of game screen
         } else {
+          var endTime = new Date();
+          var totalTime = (endTime.getTime() - startTime.getTime())/1000;
+          $('.question-area').append('<h3>Your total time: '+Number(totalTime.toFixed(2))+' Seconds');
+
           if (userGuess === answer.toLowerCase()) {
             score += 1;
             scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
@@ -105,6 +116,8 @@ $(document).ready(function() {
             $('.question-area').prepend(winner);
             $('.question-area').append(scoreBoard);
           } else {
+            penalty += penaltyBump;
+            $('.question-area').append('<h3>Your time (with penalties): '+(Number(penalty)+Number(totalTime.toFixed(2)))+' Seconds')
             $('.score').remove();
             $('.question-area').prepend(loser);
             $('.question-area').append(scoreBoard);

@@ -4,6 +4,17 @@ $(document).ready(function() {
   var questionField;
   var categoryArray = [];
   var categoryField;
+
+  //enable penalty field when checkbox is checked
+  $('#time-penalty-enable').change(function(){
+    if($('#time-penalty').attr('disabled')){
+      $('#time-penalty').removeAttr('disabled');
+    } else {
+      $('#time-penalty').attr('disabled', 'disabled');
+    }
+  });
+
+
   //add categories below the category field
   $('#add-category').click(function(){
     //check to make sure category doesn't already exist

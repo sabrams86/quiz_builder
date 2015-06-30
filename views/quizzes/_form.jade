@@ -9,7 +9,12 @@ div.row
     div.form-group.row
       label.col-md-3.control-label(for='name') Description
       div.col-md-9
-        textarea#name.form-control.col-md-9(type='text' name='description')= description  
+        textarea#name.form-control.col-md-9(type='text' name='description')= description 
+    div.form-group.row
+      label.col-md-4(for='time-penalty-enable') Enable Time Penalties
+      input#time-penalty-enable.col-md-1(type='checkbox' name='time_penalty_enable')
+      label.col-md-4(for='time-penalty') Penalty in Seconds
+      input#time-penalty.col-md-2(type='number' name='time_penalty' disabled)
     div.form-group.row    
       label.col-md-3.control-label(for='categories') Categories
       div.col-md-7

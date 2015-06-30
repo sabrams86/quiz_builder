@@ -40,11 +40,11 @@ router.post('/quizzes', function(req, res, next) {
   validate.exists(catArray, 'Please enter a Category');
   validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
   if (validate._errors.length === 0){
-    quizzes.insert({name: req.body.name, description: req.body.description, user_id: userId, categories: catArray, questions: questionArray}, function(err, doc){
+    quizzes.insert({name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty, user_id: userId, categories: catArray, questions: questionArray}, function(err, doc){
       res.redirect('/quizzes/'+doc._id);
     });
   } else {
-    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray} )
+    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty, categories: catArray, questions: questionArray} )
   }
 });
 
@@ -67,7 +67,7 @@ router.get('/quizzes/:id', function(req, res, next) {
 //************
 router.get('/quizzes/:id/edit', function(req, res, next) {
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, categories: doc.categories, questions: doc.questions});
+    res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, time_penalty_enable: doc.time_penalties_enabled, time_penalty: doc.time_penalty, categories: doc.categories, questions: doc.questions});
   });
 });
 
@@ -77,7 +77,7 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
 router.post('/quizzes/:id', function(req, res, next) {
   var catArray = req.body.allcatagories.split('|');
   var questionArray = JSON.parse(req.body.allquestions);
-  quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray}});
+  quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty, categories: catArray, questions: questionArray}});
   res.redirect('/quizzes/'+req.params.id);
 });
 
@@ -94,7 +94,7 @@ router.post('/quizzes/:id/delete', function(req, res, next) {
 //************
 router.get('/quizzes/:id/play', function(req, res, next) {
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/play', {name: doc.name, description: doc.description, categories: doc.categories, questions: doc.questions});
+    res.render('quizzes/play', {name: doc.name, description: doc.description, time_penalty_enabled: doc.time_penalties_enable, time_penalty: req.body.time_penalty, categories: doc.categories, questions: doc.questions});
   });
 });
 
