@@ -1,3 +1,4 @@
-for category in categories
-  div.col-md-12.category-item= category
-    div.fa.fa-times.fa-2x.delete
+unless categories[0] === ''
+  for category in categories
+    div.col-md-12.category-item= category
+      div.fa.fa-times.fa-2x.delete

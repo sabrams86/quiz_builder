@@ -31,7 +31,7 @@ router.get('/quizzes/new', function(req, res, next) {
 //************
 router.post('/quizzes', function(req, res, next) {
   var catArray = req.body.allcatagories.split('|');
-  var questionArray = req.body.allquestions.split('|');
+  var questionArray = JSON.parse(req.body.allquestions);
   var userId = req.cookies.user_id;
   var validate = new Validator;
   validate.exists(req.body.name, 'Please enter a quiz name');
@@ -40,18 +40,10 @@ router.post('/quizzes', function(req, res, next) {
   validate.exists(catArray, 'Please enter a Category');
   validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
   if (validate._errors.length === 0){
-    questionArray = questionArray.map(function(e){
-      return JSON.parse(e);
-    });
     quizzes.insert({name: req.body.name, description: req.body.description, user_id: userId, categories: catArray, questions: questionArray}, function(err, doc){
       res.redirect('/quizzes/'+doc._id);
     });
   } else {
-    if(questionArray.length > 1){
-      questionArray = questionArray.map(function(e){
-        return JSON.parse(e);
-      });
-    }
     res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray} )
   }
 });
@@ -84,10 +76,7 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
 //************
 router.post('/quizzes/:id', function(req, res, next) {
   var catArray = req.body.allcatagories.split('|');
-  var questionArray = req.body.allquestions.split('|');
-  questionArray = questionArray.map(function(e){
-    return JSON.parse(e);
-  });
+  var questionArray = JSON.parse(req.body.allquestions);
   quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, categories: catArray, questions: questionArray}});
   res.redirect('/quizzes/'+req.params.id);
 });

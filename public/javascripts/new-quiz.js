@@ -10,8 +10,11 @@ $(document).ready(function() {
     $('.error').remove();
     var check = 0;
     var existingCategories = document.getElementsByClassName('category-item');
+    if ($('#categories').val().trim() === ''){
+      check = 2;
+    }
     for (var i = 0; i < existingCategories.length; i++){
-      if ($('#categories').val().toLowerCase() === existingCategories[i].textContent.toLowerCase()) {
+      if ($('#categories').val().toLowerCase().trim() === existingCategories[i].textContent.toLowerCase()) {
         check = 1;
         break;
       }
@@ -21,13 +24,20 @@ $(document).ready(function() {
       var newCat = document.createElement('div');
       var deleteButton = document.createElement('div');
       deleteButton.className = 'fa fa-times fa-2x delete';
-      newCat.innerHTML = $('#categories').val();
+      newCat.innerHTML = $('#categories').val().trim();
       // categoryArray.push($('#categories').val());
       newCat.appendChild(deleteButton);
       newCat.className = 'col-md-12 category-item';
       $('#category-list').prepend(newCat);
       $('#categories').val('');
       //if it does exist, show an error message
+    } else if (check === 2) {
+      var categoryError = document.createElement('div');
+      categoryError.className = 'error';
+      var catError = document.createElement('p');
+      catError.innerHTML = 'Category cannot be blank';
+      categoryError.appendChild(catError);
+      $('h1').after(categoryError);
     } else {
       var categoryError = document.createElement('div');
       categoryError.className = 'error';
@@ -67,16 +77,19 @@ $(document).ready(function() {
     $('.error').remove();
     var check = 0;
     var existingQuestions = document.getElementsByClassName('ques');
+    var input = '';
+    if ($('#question-type').val() === 'image-upload') {
+      var input = $('#file-field').val();
+    } else if ($('#question-type').val() === 'image-url') {
+      var input = $('#url-field').val();
+    } else if ($('#question-type').val() === 'plain-text') {
+      var input = $('#text-field').val();
+    }
+    if (input.trim() === '' || $('#answer').val().trim() === ''){
+      check = 2;
+    }
     for (var i = 0; i < existingQuestions.length; i++){
-      var input = '';
-      if ($('#question-type').val() === 'image-upload') {
-        var input = $('#file-field').val();
-      } else if ($('#question-type').val() === 'image-url') {
-        var input = $('#url-field').val();
-      } else if ($('#question-type').val() === 'plain-text') {
-        var input = $('#text-field').val();
-      }
-      if (input.toLowerCase() === existingQuestions[i].textContent.toLowerCase()) {
+      if (input.toLowerCase().trim() === existingQuestions[i].textContent.toLowerCase()) {
         check = 1;
         break;
       }
@@ -101,8 +114,8 @@ $(document).ready(function() {
       } else if ($('#question-type').val() === 'plain-text') {
         var questionVal = $('#text-field').val();
       }
-      questionCol.innerHTML = questionVal;
-      answerCol.innerHTML = $('#answer').val();
+      questionCol.innerHTML = questionVal.trim();
+      answerCol.innerHTML = $('#answer').val().trim();
       answerCol.appendChild(deleteButton);
       newRow.appendChild(questionType);
       newRow.appendChild(questionCol);
@@ -112,6 +125,13 @@ $(document).ready(function() {
       $('#url-field').val('');
       $('#file-field').val('');
       $('#answer').val('');
+    } else if (check === 2){
+      var questionError = document.createElement('div');
+      questionError.className = 'error';
+      var quesError = document.createElement('p');
+      quesError.innerHTML = 'Question and answer must both be filled out';
+      questionError.appendChild(quesError);
+      $('h1').after(questionError);
     } else {
       var questionError = document.createElement('div');
       questionError.className = 'error';
@@ -154,9 +174,7 @@ $(document).ready(function() {
     questionField = document.createElement('input');
     questionField.type = 'text';
     questionField.name = 'allquestions';
-    questionField.value = questionArray.map(function(e){
-      return JSON.stringify(e);
-    }).join('|');
+    questionField.value = JSON.stringify(questionArray);
 
     $('#new_quiz').append(categoryField);
     $('#new_quiz').append(questionField);
