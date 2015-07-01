@@ -5,6 +5,14 @@ $(document).ready(function() {
   var categoryArray = [];
   var categoryField;
 
+  //toggle bulk upload form
+  $('#toggle_upload').on('click', 'button', function(){
+    $('#toggle_bulk').toggleClass('hidden');
+    $('#toggle_single').toggleClass('hidden');
+    $('#bulk_upload').toggleClass('hidden');
+    $('#single_upload').toggleClass('hidden');
+  });
+
   //enable penalty field when checkbox is checked
   $('#time-penalty-enable').change(function(){
     if($('#time-penalty').attr('disabled')){

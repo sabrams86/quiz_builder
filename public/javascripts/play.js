@@ -24,7 +24,7 @@ $(document).ready(function() {
 
   function add() {
       milliseconds++;
-      if (milliseconds >= 60) {
+      if (milliseconds >= 100) {
           milliseconds = 0;
           seconds++;
           if (seconds >= 60) {
@@ -36,12 +36,9 @@ $(document).ready(function() {
       timer();
   }
   function timer() {
-      t = setTimeout(add, 1000);
+      t = setTimeout(add, 10);
   }
 
-  /* Stop button */
-  stop.onclick = function() {
-  }
 
 
 
@@ -145,7 +142,8 @@ $(document).ready(function() {
           clearTimeout(t);
           var endTime = new Date();
           var totalTime = (endTime.getTime() - startTime.getTime())/1000;
-          $('.question-area').append('<h3>Your total time: '+Number(totalTime.toFixed(2))+' Seconds');
+          var totalTime = $('.timer')[0].textContent;
+          $('.question-area').append('<h3>Your total time: '+totalTime+' Seconds');
 
           if (userGuess === answer.toLowerCase()) {
             score += 1;
@@ -155,7 +153,9 @@ $(document).ready(function() {
             $('.question-area').append(scoreBoard);
           } else {
             penalty += penaltyBump;
-            $('.question-area').append('<h3>Your score: '+(Number(penalty)+Number(totalTime.toFixed(2))))
+            console.log(minutes, seconds, penalty);
+            var totalScore = minutes * 60 + seconds + penalty;
+            $('.question-area').append('<h3>Your score: '+ totalScore);
             $('.score').remove();
             $('.question-area').prepend(loser);
             $('.question-area').append(scoreBoard);

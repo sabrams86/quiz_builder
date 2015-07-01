@@ -31,29 +31,37 @@ div.row
   div.col-md-1
   div.col-md-7
     div.form-group.row
-      div.col-md-12
-        input#submit.btn.btn-primary.btn-block.btn-lg(type='submit' value='Create')
+      div.row
+        input#submit.btn.btn-primary.btn-block.btn-lg(type='submit' value='Save Quiz')
     div.form-group.row
       h3 Questions
       div.form-group.row
-        label.col-md-6.control-label(for='question-type') Question Type
-        label.col-md-6.control-label(for='answer') Answer
-      div.form-group.row
-        div.col-md-6
-          select#question-type.form-control.col-md-8(type='text' name='question-type')
-            //- option(value='image-upload') Image Upload
-            option(value='image-url') Image URL
-            option(value='plain-text') Plain Text
-        div.col-md-6  
-          button#add-question.col-md-2.btn.btn-sml(type='button') Add
-      div.form-group.row   
-        div.col-md-6
-          //- input#file-field.form-control.col-md-6(type='file' name='file')
-          input#url-field.form-control.col-md-6(type='text' name='answer') 
-          textarea#text-field.form-control.col-md-6.hidden(name='answer')
-        div.col-md-6
-          input#answer.form-control.col-md-6(type='text' name='answer')
-        div#question-list.row
-          if questions
-            include _questions
-      
+      div#toggle_upload
+        button#toggle_bulk.btn.btn-block.btn-md.btn-success(type='button') Bulk Upload
+        button#toggle_single.btn.btn-block.btn-md.btn-success.hidden(type='button') Individual Question Entry
+      div#single_upload.form-group.row    
+        div.form-group.row
+          label.col-md-6.control-label(for='question-type') Question Type
+          label.col-md-6.control-label(for='answer') Answer
+        div.form-group.row
+          div.col-md-6
+            select#question-type.form-control.col-md-8(type='text' name='question-type')
+              //- option(value='image-upload') Image Upload
+              option(value='image-url') Image URL
+              option(value='plain-text') Plain Text
+          div.col-md-6  
+            button#add-question.col-md-2.btn.btn-sml(type='button') Add
+        div.form-group.row   
+          div.col-md-6
+            //- input#file-field.form-control.col-md-6(type='file' name='file')
+            input#url-field.form-control.col-md-6(type='text' name='answer') 
+            textarea#text-field.form-control.col-md-6.hidden(name='answer')
+          div.col-md-6
+            input#answer.form-control.col-md-6(type='text' name='answer')
+          div#question-list.row
+            if questions
+              include _questions
+      div#bulk_upload.form-group.row.hidden
+        label(for='multi_upload') Quick Upload
+        p Upload using a csv format as shown below.  Please use either "plain-text" or "image-url" for question type.
+        textarea#multi_upload.col-md-12(name='multi_upload' rows='15' placeholder='question type, question, answer\nexample:\nplain-text, What is the Capital of Colorado?, Denver\nimage-url, www.pictures.com/mypineappleimage.jpg, Pineapple')
