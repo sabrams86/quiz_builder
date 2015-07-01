@@ -2,23 +2,40 @@ extends layout
 
 block content
   div.login-form
-    a.right(href='/users/new') Register as a new User
-    form(action='/users/login' method='post')
+    if !user_id
+      a.right(href='/users/new') Register as a new User
+      form(action='/users/login' method='post')
+        p
+          label.col-md-6(for='email') Email
+          input#email.col-md-6.form-control-xs(type='text' name='email')
+        p
+          label.col-md-6(for='password') Password
+          input#password.col-md-6.form-control-xs(type='password' name='password')
+        p
+          div.col-md-6
+          input#login.btn.btn-xs.btn-success(type='submit' value='Login')
+    if user_id
+      p Welcome!
       p
-        label.col-md-6(for='email') Email
-        input#email.col-md-6(type='text' name='email')
-      p
-        label.col-md-6(for='password') Password
-        input#password.col-md-6(type='password' name='password')
-      p
-        div.col-md-6
-        input#login.btn.btn-xs.btn-success(type='submit' value='Login')
+        a.btn.btn-primary(href='/quizzes') My Quizzes
+      form(action='/users/logout' method='get')
+        input#logout.btn.btn-xs.btn-danger(type='submit' value='Logout')
   div.page-header
     h1 Quiz Builder 
       small Welcome!  Feel free to take some quizzes or make your own!
-  form(action='/quizzes/new' method='get')
-    button.btn.btn-primary.btn-block.btn-lg(type='submit') Make a New Quiz
   div.clear
+  nav.navbar.navbar-default
+    form.navbar-form.navbar-left(action='/' method='get')
+      //- div.form-group
+      //-   label(for='usersearch') Search by user email &nbsp; &nbsp;
+      //-   input#usersearch.form-control-sm(type='text' name='usersearch')  
+      //-   &nbsp; &nbsp;
+      div.form-group
+        label(for='categorysearch') Search by category &nbsp; &nbsp;
+        input#categorysearch.form-control-sm(type='text' name='categorysearch')
+        &nbsp; &nbsp;
+      input.btn.btn-primary.btn-sm(type='submit' value='Search')
+    a.btn.btn-success.btn-sm.navbar-btn(href='/') Clear Search
   div.container
     each quiz in quizzes
       a(href='/quizzes/'+quiz._id+'/play')

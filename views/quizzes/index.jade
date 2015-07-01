@@ -7,7 +7,8 @@ block content
   p
     a(href='/') Back to the Home Page
   p
-    a(href='/quizzes/new') Create a New Quiz
+  form(action='/quizzes/new' method='get')
+    button.btn.btn-primary.btn-block.btn-lg(type='submit') Make a New Quiz
   table.table.table-hover
     thead
       tr

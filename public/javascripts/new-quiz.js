@@ -35,7 +35,7 @@ $(document).ready(function() {
       var newCat = document.createElement('div');
       var deleteButton = document.createElement('div');
       deleteButton.className = 'fa fa-times fa-2x delete';
-      newCat.innerHTML = $('#categories').val().trim();
+      newCat.innerHTML = $('#categories').val().trim().toLowerCase();
       // categoryArray.push($('#categories').val());
       newCat.appendChild(deleteButton);
       newCat.className = 'col-md-12 category-item';
