@@ -15,6 +15,39 @@ $(document).ready(function() {
     }
     return array;
   }
+
+
+
+
+  var milliseconds = 0, seconds = 0, minutes = 0;
+  var t;
+
+  function add() {
+      milliseconds++;
+      if (milliseconds >= 60) {
+          milliseconds = 0;
+          seconds++;
+          if (seconds >= 60) {
+              seconds = 0;
+              minutes++;
+          }
+      }
+      $('.timer').html((minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") + ":" + (milliseconds > 9 ? milliseconds : "0" + milliseconds));
+      timer();
+  }
+  function timer() {
+      t = setTimeout(add, 1000);
+  }
+
+  /* Stop button */
+  stop.onclick = function() {
+  }
+
+
+
+
+
+
   //set up a variable to generate the form needed for each question
   var form = '<div class="form">\
     <form action="#" method="get">\
@@ -29,6 +62,7 @@ $(document).ready(function() {
   $('#start').click(function(){
     var penalty = 0;
     var startTime = new Date();
+    timer();
     event.preventDefault();
     var quizId = getId();
     var xhr = new XMLHttpRequest;
@@ -105,6 +139,7 @@ $(document).ready(function() {
           $('.guess').focus();
           //if there are no more questions, evaluate and show end of game screen
         } else {
+          clearTimeout(t);
           var endTime = new Date();
           var totalTime = (endTime.getTime() - startTime.getTime())/1000;
           $('.question-area').append('<h3>Your total time: '+Number(totalTime.toFixed(2))+' Seconds');

@@ -98,6 +98,7 @@ a {
 
   display: inline-block;
   float: right;
+  width: 200px
 }
 .login-form label{
   font-weight: normal;

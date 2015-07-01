@@ -15,11 +15,12 @@ block content
           div.col-md-6
           input#login.btn.btn-xs.btn-success(type='submit' value='Login')
     if user_id
-      p Welcome!
-      p
-        a.btn.btn-primary(href='/quizzes') My Quizzes
-      form(action='/users/logout' method='get')
-        input#logout.btn.btn-xs.btn-danger(type='submit' value='Logout')
+      div.right
+        p Welcome!
+        p
+          a.btn.btn-primary(href='/quizzes') My Quizzes
+        form(action='/users/logout' method='get')
+          input#logout.btn.btn-xs.btn-danger(type='submit' value='Logout')
   div.page-header
     h1 Quiz Builder 
       small Welcome!  Feel free to take some quizzes or make your own!
