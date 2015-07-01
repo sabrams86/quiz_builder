@@ -3,6 +3,7 @@ var router = express.Router();
 var db = require('./../connection');
 var quizzes = db.get('quizzes');
 var Validator = require('./../lib/validator');
+var questionParser = require('./../lib/question_parser');
 
 //*********
 //**INDEX**
@@ -34,6 +35,10 @@ router.post('/quizzes', function(req, res, next) {
   var questionArray = JSON.parse(req.body.allquestions);
   var userId = req.cookies.user_id;
   var validate = new Validator;
+  if (req.body.multi_upload) {
+    questionArray = questionParser.processCSV(req.body.multi_upload);
+    validate.questionObjects(questionArray, "Your CSV format is not valid, please check to make sure you are not missing any elements")
+  }
   validate.exists(req.body.name, 'Please enter a quiz name');
   validate.exists(req.body.description, 'Please enter a description for your quiz')
   validate.exists(questionArray, 'You can\'t make a quiz without questions');

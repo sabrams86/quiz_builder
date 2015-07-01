@@ -58,7 +58,6 @@ $(document).ready(function() {
 //*********************************************
   $('#start').click(function(){
     var penalty = 0;
-    var startTime = new Date();
     timer();
     event.preventDefault();
     var quizId = getId();
@@ -140,8 +139,6 @@ $(document).ready(function() {
           //if there are no more questions, evaluate and show end of game screen
         } else {
           clearTimeout(t);
-          var endTime = new Date();
-          var totalTime = (endTime.getTime() - startTime.getTime())/1000;
           var totalTime = $('.timer')[0].textContent;
           $('.question-area').append('<h3>Your total time: '+totalTime+' Seconds');
 
