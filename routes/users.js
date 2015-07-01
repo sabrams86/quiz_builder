@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require('./../connection');
 var users = db.get('users');
 var bcrypt = require('bcryptjs');
-
+var Validator = require('./../lib/validator');
 //INDEX
 router.get('/users', function(req, res, next) {
   users.find({},{},function(err, docs){
@@ -50,11 +50,24 @@ router.get('/users/:id/edit', function(req, res, next){
 
 //CREATE
 router.post('/users', function(req, res, next){
+  var validate = new Validator;
   var password = bcrypt.hashSync(req.body.password, 8);
-  users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, password: password}, function(err, doc){
-    res.cookie('user_id', doc._id);
-    res.redirect('/quizzes');
-  });
+  validate.exists(req.body.first_name, 'First name can\'t be blank');
+  validate.exists(req.body.last_name, 'Last name can\'t be blank');
+  validate.exists(req.body.email, "Email can't be blank");
+  validate.exists(req.body.password, "Please enter a password");
+  validate.exists(req.body.password_confirm, "Please confirm your password");
+  validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
+  validate.email(req.body.email, "Invalid email format, please enter format 'example@website.com'");
+  validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
+  if (validate._errors.length === 0) {
+    users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, password: password}, function(err, doc){
+      res.cookie('user_id', doc._id);
+      res.redirect('/quizzes');
+    });
+  } else {
+    res.render('users/new', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, errors: validate._errors});
+  }
 });
 
 //UPDATE

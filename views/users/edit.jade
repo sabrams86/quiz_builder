@@ -1,0 +1,8 @@
+extends ./../layout
+
+block content
+  h1 Edit User Account
+  if errors
+    include _errors
+  form.new-user-form(action='/users/:id' method='post')
+    include _form
