@@ -13,7 +13,14 @@ $(document).ready(function() {
       $('#time-penalty').attr('disabled', 'disabled');
     }
   });
-
+  //enable penalty field when checkbox is checked
+  $('#answer-penalty-enable').change(function(){
+    if($('#answer-penalty').attr('disabled')){
+      $('#answer-penalty').removeAttr('disabled');
+    } else {
+      $('#answer-penalty').attr('disabled', 'disabled');
+    }
+  });
 
   //add categories below the category field
   $('#add-category').click(function(){

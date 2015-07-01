@@ -76,6 +76,9 @@ $(document).ready(function() {
       } else {
         var penaltyBump = 0;
       }
+      if (quizData.answer_penalties_enabled){
+        penaltyBump += Number(quizData.time_penalty);
+      }
       var score = 0;
       var maxScore = quizData.questions.length;
       //shuffle array of questions
@@ -109,7 +112,7 @@ $(document).ready(function() {
           //if user is correct
           if (userGuess === answer.toLowerCase()) {
             score += 1;
-            scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
+            scoreBoard = '<h4 class="score">Points: '+score+' / '+maxScore+'</h4>';
             $('.message').remove();
             $('.score').remove();
             $('.question-area').prepend(winner);
@@ -152,7 +155,7 @@ $(document).ready(function() {
             $('.question-area').append(scoreBoard);
           } else {
             penalty += penaltyBump;
-            $('.question-area').append('<h3>Your time (with penalties): '+(Number(penalty)+Number(totalTime.toFixed(2)))+' Seconds')
+            $('.question-area').append('<h3>Your score: '+(Number(penalty)+Number(totalTime.toFixed(2))))
             $('.score').remove();
             $('.question-area').prepend(loser);
             $('.question-area').append(scoreBoard);
