@@ -167,7 +167,6 @@ $(document).ready(function() {
     $('.category-item').each(function(e){
       categoryArray.push(this.textContent);
     });
-    console.log(categoryArray);
 
     $('.question-div').each(function(e){
       questionArray.push({
@@ -176,7 +175,6 @@ $(document).ready(function() {
         'answer': this.children[2].textContent,
       });
     });
-    console.log(questionArray);
 
     categoryField = document.createElement('input');
     categoryField.type = 'text';
