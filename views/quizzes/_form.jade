@@ -42,7 +42,6 @@ div.row
       div#single_upload.form-group.row    
         div.form-group.row
           label.col-md-6.control-label(for='question-type') Question Type
-          label.col-md-6.control-label(for='answer') Answer
         div.form-group.row
           div.col-md-6
             select#question-type.form-control.col-md-8(type='text' name='question-type')
@@ -51,7 +50,10 @@ div.row
               option(value='plain-text') Plain Text
           div.col-md-6  
             button#add-question.col-md-2.btn.btn-sml(type='button') Add
-        div.form-group.row   
+        div.form-group.row 
+          label.col-md-6.control-label(for='question-type') Question
+          label.col-md-6.control-label(for='answer') Answer  
+        div.form-group.row 
           div.col-md-6
             //- input#file-field.form-control.col-md-6(type='file' name='file')
             input#url-field.form-control.col-md-6(type='text' name='answer') 
@@ -64,4 +66,4 @@ div.row
       div#bulk_upload.form-group.row.hidden
         label(for='multi_upload') Quick Upload
         p Upload using a csv format as shown below.  Please use either "plain-text" or "image-url" for question type.
-        textarea#multi_upload.col-md-12(name='multi_upload' rows='15' placeholder='question type, question, answer\nexample:\nplain-text, What is the Capital of Colorado?, Denver\nimage-url, www.pictures.com/mypineappleimage.jpg, Pineapple')
+        textarea#multi_upload.col-md-12(name='multi_upload' rows='15' placeholder='question type, question, answer\nexample:\nplain-text, What is the Capital of Colorado?, Denver\nimage-url, www.pictures.com/mypineappleimage.jpg, Pineapple')= multi_upload

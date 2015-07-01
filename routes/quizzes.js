@@ -37,7 +37,10 @@ router.post('/quizzes', function(req, res, next) {
   var validate = new Validator;
   if (req.body.multi_upload) {
     questionArray = questionParser.processCSV(req.body.multi_upload);
-    validate.questionObjects(questionArray, "Your CSV format is not valid, please check to make sure you are not missing any elements")
+    validate.questionObjects(questionArray, "Your CSV format is not valid, please check to make sure you are not missing any elements");
+    if (validate._errors.length > 0){
+      questionArray = [];
+    }
   }
   validate.exists(req.body.name, 'Please enter a quiz name');
   validate.exists(req.body.description, 'Please enter a description for your quiz')
@@ -49,7 +52,7 @@ router.post('/quizzes', function(req, res, next) {
       res.redirect('/quizzes/'+doc._id);
     });
   } else {
-    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty,categories: catArray, questions: questionArray} )
+    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, multi_upload: req.body.multi_upload, categories: catArray, questions: questionArray} )
   }
 });
 
@@ -122,7 +125,20 @@ questions: [
             answer: 'stuff'
           }
         ],
-
+high_scores: [
+        {
+         user_id: joe,
+         score: 1222
+        },
+        {
+         user_id: steve,
+         score: 1151
+        },
+        {
+         user_id: bob,
+         score: 1231
+        }
+      ]
 }
 
 */

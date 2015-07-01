@@ -12,10 +12,17 @@ router.get('/', function(req, res, next) {
   var searchParams;
   if (userEmail && categories) {
     users.find({email: userEmail}, {}, function(err, userDocs){
-      searchParams = {$and: [{user_id: String(userDocs[0]._id)}, {categories : categories.toLowerCase()}]};
-      quizzes.find(searchParams, {}, function(err, docs){
-        res.render('index', {quizzes: docs, user_id: userId});
-      });
+      if(userDocs > 0){
+        searchParams = {$and: [{user_id: String(userDocs[0]._id)}, {categories : categories.toLowerCase()}]};
+        quizzes.find(searchParams, {}, function(err, docs){
+          res.render('index', {quizzes: docs, user_id: userId});
+        });
+      } else {
+        searchParams = {name: 'asdf'};
+        quizzes.find(searchParams, {}, function(err, docs){
+          res.render('index', {quizzes: docs, user_id: userId, message: 'No Results Found'});
+        });
+      }
     });
   }
   else if (categories){
@@ -25,10 +32,17 @@ router.get('/', function(req, res, next) {
     });
   } else if (userEmail) {
     users.find({email: userEmail}, {}, function(err, userDocs){
-      searchParams = {user_id: String(userDocs[0]._id)};
-      quizzes.find(searchParams, {}, function(err, docs){
-        res.render('index', {quizzes: docs, user_id: userId});
-      });
+      if (userDocs.length > 0) {
+        searchParams = {user_id: String(userDocs[0]._id)};
+        quizzes.find(searchParams, {}, function(err, docs){
+          res.render('index', {quizzes: docs, user_id: userId});
+        });
+      } else {
+        searchParams = {name: 'asdf'};
+        quizzes.find(searchParams, {}, function(err, docs){
+          res.render('index', {quizzes: docs, user_id: userId, message: 'No Results Found'});
+        });
+      }
     });
   } else {
     searchParams = {};

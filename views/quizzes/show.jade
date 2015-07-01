@@ -2,7 +2,10 @@ extends ./../layout
 
 block content
   h1= quiz.name
-  a(href='/') Back to the Home Page
+  p
+    a(href='/quizzes') Back to my quizzes
+  p
+    a(href='/quizzes/'+quiz._id+'/edit') Edit this quiz
   h3 Description
   p= quiz.description
   h3 Categories
