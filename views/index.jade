@@ -22,8 +22,11 @@ block content
         form(action='/users/logout' method='get')
           input#logout.btn.btn-xs.btn-danger(type='submit' value='Logout')
   div.page-header
-    h1 Quiz Builder 
-      small Welcome!  Feel free to take some quizzes or make your own!
+    h1 Flash Codes 
+      small  Quizzes about code by people who code.
+    if !user_id
+      h2
+        small Sign up to create your own quizzes and rank against other coders!
   div.clear
   nav.navbar.navbar-default
     form.navbar-form.navbar-left(action='/' method='get')
@@ -39,7 +42,18 @@ block content
     a.btn.btn-success.btn-sm.navbar-btn(href='/') Clear Search
   div.container
     each quiz in quizzes
-      a(href='/quizzes/'+quiz._id+'/play')
-        div.quiz
-          h4= quiz.name
-          div.quizdesc= quiz.description
+      div.quiz
+        div.info
+          a(href='/quizzes/'+quiz._id+'/play')
+            h4= quiz.name
+            div.quizdesc= quiz.description
+        div.score-button
+          button.show-scores.btn.btn-xs.btn-info(type='button') 
+            div.fa.fa-trophy  Leader Board
+            div.fa.fa-info-circle.hidden  Description
+        div.play-button
+          a.play-game.btn.btn-xs.btn-success(href='/quizzes/'+quiz._id+'/play') 
+            div.fa.fa-play-circle  Play Game
+
+block javascript
+  script(src='/javascripts/home.js' type='text/javascript')

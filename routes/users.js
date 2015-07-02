@@ -46,7 +46,7 @@ router.post('/users', function(req, res, next){
 //***********************************************************
 //** Check for cookie before allowing quiz editting access **
 //***********************************************************
-router.all('/*', function(req, res, next){
+router.all('/users/*', function(req, res, next){
   var userLoggedIn = req.cookies.user_id;
   if (userLoggedIn) {
     next();
