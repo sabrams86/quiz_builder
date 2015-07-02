@@ -8,7 +8,7 @@ $(document).ready(function() {
   // set a variable to the html needed to generate a form that will reload the page when the user wants to play again
   var playAgain = '<form action="index.html" method="get"><input class="retry" type="submit" name="again" value="Play Again!"></form>';
   //create variables for the timer display
-  var milliseconds = 0, seconds = 0, minutes = 0;
+  var centiseconds = 0, seconds = 0, minutes = 0;
   var t;
 
   var clearPlayField = function(){
@@ -37,19 +37,21 @@ $(document).ready(function() {
     }
     return array;
   }
+  //add time to the timer
   var add = function() {
-      milliseconds++;
-      if (milliseconds >= 100) {
-          milliseconds = 0;
+      centiseconds++;
+      if (centiseconds >= 100) {
+          centiseconds = 0;
           seconds++;
           if (seconds >= 60) {
               seconds = 0;
               minutes++;
           }
       }
-      $('.timer').html((minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") + ":" + (milliseconds > 9 ? milliseconds : "0" + milliseconds));
+      $('.timer').html((minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") + ":" + (centiseconds > 9 ? centiseconds : "0" + centiseconds));
       timer();
   }
+  //sets up the timer to run every 100th of a second.
   var timer = function() {
       t = setTimeout(add, 10);
   }

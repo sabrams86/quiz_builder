@@ -58,6 +58,7 @@ router.post('/users', function(req, res, next){
   validate.exists(req.body.password, "Please enter a password");
   validate.exists(req.body.password_confirm, "Please confirm your password");
   validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
+  if (req.body.email)
   validate.email(req.body.email, "Invalid email format, please enter format 'example@website.com'");
   validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
   if (validate._errors.length === 0) {
