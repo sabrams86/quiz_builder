@@ -6,7 +6,9 @@ body {
 a {
   color: #00B7FF;
 }
-
+.quizdesc{
+    color: #00BBFF;
+}
 .delete {
   cursor: pointer;
   float: right;

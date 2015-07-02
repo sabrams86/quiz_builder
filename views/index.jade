@@ -46,7 +46,9 @@ block content
         div.info
           a(href='/quizzes/'+quiz._id+'/play')
             h4= quiz.name
-            div.quizdesc= quiz.description
+          div.quizdesc
+            div= quiz.description
+            div= quiz.scores
         div.score-button
           button.show-scores.btn.btn-xs.btn-info(type='button') 
             div.fa.fa-trophy  Leader Board
