@@ -2,6 +2,7 @@ extends ./../layout
 
 block content
   h1 Create New Account
+  a(href='/') Back to home page
   if errors
     include ./../_errors
   form.new-user-form(action='/users' method='post')

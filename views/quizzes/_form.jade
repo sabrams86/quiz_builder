@@ -66,4 +66,5 @@ div.row
       div#bulk_upload.form-group.row.hidden
         label(for='multi_upload') Quick Upload
         p Upload using a csv format as shown below.  Please use either "plain-text" or "image-url" for question type.
+        p.warning WARNING: Any questions entered on the individual question upload page will be lost if this form is filled out!!!
         textarea#multi_upload.col-md-12(name='multi_upload' rows='15' placeholder='question type, question, answer\nexample:\nplain-text, What is the Capital of Colorado?, Denver\nimage-url, www.pictures.com/mypineappleimage.jpg, Pineapple')= multi_upload

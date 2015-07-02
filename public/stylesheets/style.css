@@ -114,3 +114,8 @@ a {
 .new-user-form label {
   text-align: right;
 }
+
+.warning {
+  color: orange;
+  font-weight: 500;
+}

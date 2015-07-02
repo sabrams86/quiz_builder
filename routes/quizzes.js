@@ -36,17 +36,27 @@ router.post('/quizzes', function(req, res, next) {
   var userId = req.cookies.user_id;
   var validate = new Validator;
   if (req.body.multi_upload) {
-    questionArray = questionParser.processCSV(req.body.multi_upload);
-    validate.questionObjects(questionArray, "Your CSV format is not valid, please check to make sure you are not missing any elements");
+    parsedCSV = questionParser.processCSV(req.body.multi_upload);
+    validate.lengthOfSubArray(parsedCSV, 3, "You have too many or too little elements in one of your CSV lines, please fix and resubmit");
+    validate.uniqueCSVQuestions(parsedCSV, "You cannot have duplicate questions, please modify your CSV and resubmit");
+    validate.uploadType(parsedCSV, "You must have 'image-url' or 'plain-text' as the first item in each row of your CSV, please fix and resubmit")
+    questionArray = questionParser.arrayToQuestionObject(parsedCSV);
+    validate.questionObjects(questionArray, "Your CSV format is not valid, please check for extra commas or missing elements");
     if (validate._errors.length > 0){
       questionArray = [];
+    } else {
+      validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
+      if (validate._errors.length > 0){
+        questionArray = [];
+      }
     }
+  } else {
+    validate.exists(questionArray, 'You can\'t make a quiz without questions');
+    validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
   }
   validate.exists(req.body.name, 'Please enter a quiz name');
   validate.exists(req.body.description, 'Please enter a description for your quiz')
-  validate.exists(questionArray, 'You can\'t make a quiz without questions');
   validate.exists(catArray, 'Please enter a Category');
-  validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
   if (validate._errors.length === 0){
     quizzes.insert({name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty, answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, user_id: userId, categories: catArray, questions: questionArray}, function(err, doc){
       res.redirect('/quizzes/'+doc._id);
@@ -85,8 +95,31 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
 router.post('/quizzes/:id', function(req, res, next) {
   var catArray = req.body.allcatagories.split('|');
   var questionArray = JSON.parse(req.body.allquestions);
-  quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty,categories: catArray, questions: questionArray}});
-  res.redirect('/quizzes/'+req.params.id);
+  var validate = new Validator;
+  if (req.body.multi_upload) {
+    questionArray = questionParser.processCSV(req.body.multi_upload);
+    validate.questionObjects(questionArray, "Your CSV format is not valid, please check for extra commas or missing elements");
+    if (validate._errors.length > 0){
+      questionArray = [];
+    } else {
+      validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
+      if (validate._errors.length > 0){
+        questionArray = [];
+      }
+    }
+  }
+  validate.exists(req.body.name, 'Please enter a quiz name');
+  validate.exists(req.body.description, 'Please enter a description for your quiz')
+  validate.exists(questionArray, 'You can\'t make a quiz without questions');
+  validate.exists(catArray, 'Please enter a Category');
+  validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
+  if (validate._errors.length === 0){
+    quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty,categories: catArray, questions: questionArray}});
+    res.redirect('/quizzes/'+req.params.id);
+  } else {
+    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, multi_upload: req.body.multi_upload, categories: catArray, questions: questionArray} )
+  }
+
 });
 
 //************

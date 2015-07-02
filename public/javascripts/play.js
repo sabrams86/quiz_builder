@@ -11,15 +11,15 @@ $(document).ready(function() {
   var centiseconds = 0, seconds = 0, minutes = 0;
   var t;
 
-  var clearPlayField = function(){
-    $('.message').remove();
-    $('.score').remove();
-  }
+  // var clearPlayField = function(){
+  //   $('.message').remove();
+  //   $('.score').remove();
+  // }
 
-  var populatePlayField = function(status){
-    $('.question-area').prepend(status);
-    $('.question-area').append(scoreBoard);
-  }
+  // var populatePlayField = function(status){
+  //   $('.question-area').prepend(status);
+  //   $('.question-area').append(scoreBoard);
+  // }
 
   //returns the quiz id that is listed in the url
   var getId = function(){
@@ -111,13 +111,17 @@ $(document).ready(function() {
           if (userGuess === answer.toLowerCase()) {
             score += 1;
             scoreBoard = '<h4 class="score">Points: '+score+' / '+maxScore+'</h4>';
-            clearPlayField();
-            populatePlayField(winner);
+            $('.message').remove();
+            $('.score').remove();
+            $('.question-area').prepend(winner);
+            $('.question-area').append(scoreBoard);
             //if user is wrong
           } else {
             penalty += penaltyBump;
-            clearPlayField();
-            populatePlayField(loser);
+            $('.message').remove();
+            $('.score').remove();
+            $('.question-area').prepend(loser);
+            $('.question-area').append(scoreBoard);
           }
           question = questions[questions.length-1];
           if (question.type === 'plain-text') {
@@ -144,14 +148,16 @@ $(document).ready(function() {
             score += 1;
             scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
             $('.score').remove();
-            populatePlayField(winner);
+            $('.question-area').prepend(winner);
+            $('.question-area').append(scoreBoard);
           } else {
             penalty += penaltyBump;
             console.log(minutes, seconds, penalty);
             var totalScore = minutes * 60 + seconds + penalty;
             $('.question-area').append('<h3>Your score: '+ totalScore);
             $('.score').remove();
-            populatePlayField(loser);
+            $('.question-area').prepend(loser);
+            $('.question-area').append(scoreBoard);
           }
           var playAgain = '<form action="'+document.location.pathname+'" method="get"><input class="retry btn btn-primary" type="submit" name="again" value="Play Again!"></form>';
           var home = '<form action="/" method="get"><input class="btn btn-success" type="submit" name="home" value="Return to Main Page"></form>';
