@@ -5,6 +5,25 @@ var quizzes = db.get('quizzes');
 var Validator = require('./../lib/validator');
 var questionParser = require('./../lib/question_parser');
 
+//************
+//** PLAY   **
+//************
+router.get('/quizzes/:id/play', function(req, res, next) {
+  quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
+    res.render('quizzes/play', {name: doc.name, description: doc.description, time_penalty_enabled: doc.time_penalties_enable, time_penalty: req.body.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
+  });
+});
+//***********************************************************
+//** Check for cookie before allowing quiz editting access **
+//***********************************************************
+router.all('/*', function(req, res, next){
+  var userLoggedIn = req.cookies.user_id;
+  if (userLoggedIn) {
+    next();
+  } else {
+    res.redirect('/');
+  }
+});
 //*********
 //**INDEX**
 //*********
@@ -66,16 +85,23 @@ router.post('/quizzes', function(req, res, next) {
   }
 });
 
+
+
 //*********
 //**SHOW **
 //*********
 router.get('/quizzes/:id', function(req, res, next) {
+  var userToken = req.cookies.user_id;
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    var is_ajax_request = req.xhr;
-    if (is_ajax_request) {
-      res.json(doc);
+    if (userToken != doc.user_id){
+      res.redirect('/');
     } else {
-      res.render('quizzes/show', {quiz: doc});
+      var is_ajax_request = req.xhr;
+      if (is_ajax_request) {
+        res.json(doc);
+      } else {
+        res.render('quizzes/show', {quiz: doc});
+      }
     }
   });
 });
@@ -84,8 +110,13 @@ router.get('/quizzes/:id', function(req, res, next) {
 //** EDIT   **
 //************
 router.get('/quizzes/:id/edit', function(req, res, next) {
+  var userToken = req.cookies.user_id;
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, time_penalty_enable: doc.time_penalties_enabled, time_penalty: doc.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
+    if (userToken != doc.user_id){
+      res.redirect('/');
+    } else {
+      res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, time_penalty_enable: doc.time_penalties_enabled, time_penalty: doc.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
+    }
   });
 });
 
@@ -93,49 +124,58 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
 //** UPDATE **
 //************
 router.post('/quizzes/:id', function(req, res, next) {
-  var catArray = req.body.allcatagories.split('|');
-  var questionArray = JSON.parse(req.body.allquestions);
-  var validate = new Validator;
-  if (req.body.multi_upload) {
-    questionArray = questionParser.processCSV(req.body.multi_upload);
-    validate.questionObjects(questionArray, "Your CSV format is not valid, please check for extra commas or missing elements");
-    if (validate._errors.length > 0){
-      questionArray = [];
+  var userToken = req.cookies.user_id;
+  quizzes.findOne({_id: req.params.id}, function(err, doc){
+    if (userToken != doc.user_id){
+      res.redirect('/');
     } else {
-      validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
-      if (validate._errors.length > 0){
-        questionArray = [];
+      var catArray = req.body.allcatagories.split('|');
+      var questionArray = JSON.parse(req.body.allquestions);
+      var validate = new Validator;
+      if (req.body.multi_upload) {
+        parsedCSV = questionParser.processCSV(req.body.multi_upload);
+        validate.lengthOfSubArray(parsedCSV, 3, "You have too many or too little elements in one of your CSV lines, please fix and resubmit");
+        validate.uniqueCSVQuestions(parsedCSV, "You cannot have duplicate questions, please modify your CSV and resubmit");
+        validate.uploadType(parsedCSV, "You must have 'image-url' or 'plain-text' as the first item in each row of your CSV, please fix and resubmit")
+        questionArray = questionParser.arrayToQuestionObject(parsedCSV);
+        validate.questionObjects(questionArray, "Your CSV format is not valid, please check for extra commas or missing elements");
+        if (validate._errors.length > 0){
+          questionArray = [];
+        } else {
+          validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
+          if (validate._errors.length > 0){
+            questionArray = [];
+          }
+        }
+      } else {
+        validate.exists(questionArray, 'You can\'t make a quiz without questions');
+        validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
+      }
+      validate.exists(req.body.name, 'Please enter a quiz name');
+      validate.exists(req.body.description, 'Please enter a description for your quiz')
+      validate.exists(catArray, 'Please enter a Category');
+      if (validate._errors.length === 0){
+        quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty,categories: catArray, questions: questionArray}});
+        res.redirect('/quizzes/'+req.params.id);
+      } else {
+        res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, multi_upload: req.body.multi_upload, categories: catArray, questions: questionArray} )
       }
     }
-  }
-  validate.exists(req.body.name, 'Please enter a quiz name');
-  validate.exists(req.body.description, 'Please enter a description for your quiz')
-  validate.exists(questionArray, 'You can\'t make a quiz without questions');
-  validate.exists(catArray, 'Please enter a Category');
-  validate.minLength(questionArray, 5, 'You need at least 5 questions to make a quiz');
-  if (validate._errors.length === 0){
-    quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty,categories: catArray, questions: questionArray}});
-    res.redirect('/quizzes/'+req.params.id);
-  } else {
-    res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, multi_upload: req.body.multi_upload, categories: catArray, questions: questionArray} )
-  }
-
+  });
 });
 
 //************
 //** DELETE **
 //************
 router.post('/quizzes/:id/delete', function(req, res, next) {
-  quizzes.remove({_id: req.params.id});
-  res.redirect('/quizzes');
-});
-
-//************
-//** PLAY   **
-//************
-router.get('/quizzes/:id/play', function(req, res, next) {
-  quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    res.render('quizzes/play', {name: doc.name, description: doc.description, time_penalty_enabled: doc.time_penalties_enable, time_penalty: req.body.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
+  var userToken = req.cookies.user_id;
+  quizzes.findOne({_id: req.params.id}, function(err, doc){
+    if (userToken != doc.user_id){
+      res.redirect('/');
+    } else {
+      quizzes.remove({_id: req.params.id});
+      res.redirect('/quizzes');
+    }
   });
 });
 

@@ -10,17 +10,6 @@ $(document).ready(function() {
   //create variables for the timer display
   var centiseconds = 0, seconds = 0, minutes = 0;
   var t;
-
-  // var clearPlayField = function(){
-  //   $('.message').remove();
-  //   $('.score').remove();
-  // }
-
-  // var populatePlayField = function(status){
-  //   $('.question-area').prepend(status);
-  //   $('.question-area').append(scoreBoard);
-  // }
-
   //returns the quiz id that is listed in the url
   var getId = function(){
     var path = document.location.pathname;
