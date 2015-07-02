@@ -12,7 +12,7 @@ a {
   float: right;
 }
 
-.category-item, .question-div{
+.category-item, .question-div {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
@@ -23,7 +23,7 @@ a {
   margin-bottom: 5px;
 }
 
-.options form{
+.options form {
   margin-right: 10px;
   display: inline-block;
 }
@@ -71,7 +71,7 @@ a {
   max-height: 150px;
 }
 
-.quiz{
+.quiz {
   display: inline-block;
   width: 200px;
   height: 200px;
@@ -83,7 +83,7 @@ a {
   vertical-align: top;
 }
 
-.clear{
+.clear {
   clear: both;
   display: block;
   height: 10px;
@@ -94,20 +94,23 @@ a {
   display: block;
   clear: both;
 }
-.login-form{
+.login-form {
 
   display: inline-block;
   float: right;
   width: 200px
 }
-.login-form label{
+
+.login-form label {
   font-weight: normal;
   text-align: right;
 }
-.right{
+
+.right {
   text-align: right;
   float: right;
 }
-.new-user-form label{
+
+.new-user-form label {
   text-align: right;
 }

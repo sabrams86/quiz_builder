@@ -112,6 +112,8 @@ quiz document structure:
 
 {
 name: 'super quiz',
+description: 'asdf',
+user_id: 'asdfaewfg3',
 categories: ['games', 'jquery', 'gschool'];
 questions: [
             {

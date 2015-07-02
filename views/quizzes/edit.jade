@@ -4,6 +4,8 @@ block content
   h1.row.col-md-12 Customize your quiz
   a(href='/quizzes') Back to my quizzes
   div.container
+    if errors
+      include ./../_errors
     form#new_quiz(action='/quizzes/'+quiz._id, method='post')
       include _form
 

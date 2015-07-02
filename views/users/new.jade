@@ -3,6 +3,6 @@ extends ./../layout
 block content
   h1 Create New Account
   if errors
-    include _errors
+    include ./../_errors
   form.new-user-form(action='/users' method='post')
     include _form

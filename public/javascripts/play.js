@@ -1,4 +1,26 @@
 $(document).ready(function() {
+  //set up a variable to generate the form needed for each question
+  var form = '<div class="form">\
+    <form action="#" method="get">\
+      <p><input type="text" name="guess" class="guess" autofocus></p> \
+      <input type="submit" name="submit" value="Submit" class="btn btn-sml btn-primary try">\
+    </form></div>';
+  // set a variable to the html needed to generate a form that will reload the page when the user wants to play again
+  var playAgain = '<form action="index.html" method="get"><input class="retry" type="submit" name="again" value="Play Again!"></form>';
+  //create variables for the timer display
+  var milliseconds = 0, seconds = 0, minutes = 0;
+  var t;
+
+  var clearPlayField = function(){
+    $('.message').remove();
+    $('.score').remove();
+  }
+
+  var populatePlayField = function(status){
+    $('.question-area').prepend(status);
+    $('.question-area').append(scoreBoard);
+  }
+
   //returns the quiz id that is listed in the url
   var getId = function(){
     var path = document.location.pathname;
@@ -15,14 +37,7 @@ $(document).ready(function() {
     }
     return array;
   }
-
-
-
-
-  var milliseconds = 0, seconds = 0, minutes = 0;
-  var t;
-
-  function add() {
+  var add = function() {
       milliseconds++;
       if (milliseconds >= 100) {
           milliseconds = 0;
@@ -35,24 +50,9 @@ $(document).ready(function() {
       $('.timer').html((minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00") + ":" + (milliseconds > 9 ? milliseconds : "0" + milliseconds));
       timer();
   }
-  function timer() {
+  var timer = function() {
       t = setTimeout(add, 10);
   }
-
-
-
-
-
-
-
-  //set up a variable to generate the form needed for each question
-  var form = '<div class="form">\
-    <form action="#" method="get">\
-      <p><input type="text" name="guess" class="guess" autofocus></p> \
-      <input type="submit" name="submit" value="Submit" class="btn btn-sml btn-primary try">\
-    </form></div>';
-  // set a variable to the html needed to generate a form that will reload the page when the user wants to play again
-  var playAgain = '<form action="index.html" method="get"><input class="retry" type="submit" name="again" value="Play Again!"></form>';
 //*********************************************
 //**   Start the game when user clicks start **
 //*********************************************
@@ -109,17 +109,13 @@ $(document).ready(function() {
           if (userGuess === answer.toLowerCase()) {
             score += 1;
             scoreBoard = '<h4 class="score">Points: '+score+' / '+maxScore+'</h4>';
-            $('.message').remove();
-            $('.score').remove();
-            $('.question-area').prepend(winner);
-            $('.question-area').append(scoreBoard);
+            clearPlayField();
+            populatePlayField(winner);
             //if user is wrong
           } else {
             penalty += penaltyBump;
-            $('.message').remove();
-            $('.score').remove();
-            $('.question-area').prepend(loser);
-            $('.question-area').append(scoreBoard);
+            clearPlayField();
+            populatePlayField(loser);
           }
           question = questions[questions.length-1];
           if (question.type === 'plain-text') {
@@ -146,16 +142,14 @@ $(document).ready(function() {
             score += 1;
             scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
             $('.score').remove();
-            $('.question-area').prepend(winner);
-            $('.question-area').append(scoreBoard);
+            populatePlayField(winner);
           } else {
             penalty += penaltyBump;
             console.log(minutes, seconds, penalty);
             var totalScore = minutes * 60 + seconds + penalty;
             $('.question-area').append('<h3>Your score: '+ totalScore);
             $('.score').remove();
-            $('.question-area').prepend(loser);
-            $('.question-area').append(scoreBoard);
+            populatePlayField(loser);
           }
           var playAgain = '<form action="'+document.location.pathname+'" method="get"><input class="retry btn btn-primary" type="submit" name="again" value="Play Again!"></form>';
           var home = '<form action="/" method="get"><input class="btn btn-success" type="submit" name="home" value="Return to Main Page"></form>';
