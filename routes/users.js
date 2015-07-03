@@ -23,27 +23,33 @@ router.get('/users/new', function(req, res, next) {
 
 //CREATE
 router.post('/users', function(req, res, next){
-  var validate = new Validator;
   var password = bcrypt.hashSync(req.body.password, 8);
-  validate.exists(req.body.first_name, 'First name can\'t be blank');
-  validate.exists(req.body.last_name, 'Last name can\'t be blank');
-  validate.exists(req.body.email, "Email can't be blank");
-  validate.exists(req.body.initials, "Initials can't be blank");
-  validate.exists(req.body.password, "Please enter a password");
-  validate.exists(req.body.password_confirm, "Please confirm your password");
-  validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
-  validate.maxLength(req.body.initials, 3, "Initials cannot be more than three characters")
-  if (req.body.email)
-  validate.email(req.body.email, "Invalid email format, please enter format 'example@website.com'");
-  validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
-  if (validate._errors.length === 0) {
-    users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, password: password}, function(err, doc){
-      res.cookie('user_id', doc._id);
-      res.redirect('/quizzes');
-    });
-  } else {
-    res.render('users/new', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, errors: validate._errors});
-  }
+  users.findOne({email: req.body.email}, {}, function(err, doc){
+    var validate = new Validator;
+    if (doc){
+      validate._errors.push("Email already exists, please login or register with a different email");
+    }
+    validate.exists(req.body.first_name, 'First name can\'t be blank');
+    validate.exists(req.body.last_name, 'Last name can\'t be blank');
+    validate.exists(req.body.email, "Email can't be blank");
+    validate.exists(req.body.initials, "Initials can't be blank");
+    validate.exists(req.body.password, "Please enter a password");
+    validate.exists(req.body.password_confirm, "Please confirm your password");
+    validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
+    validate.maxLength(req.body.initials, 3, "Initials cannot be more than three characters")
+    if (req.body.email) {
+      validate.email(req.body.email, "Invalid email format, please enter format 'example@website.com'");
+    }
+    validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
+    if (validate._errors.length === 0) {
+      users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, password: password}, function(err, doc){
+        res.cookie('user_id', doc._id);
+        res.redirect('/quizzes');
+      });
+    } else {
+      res.render('users/new', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, errors: validate._errors});
+    }
+  });  
 });
 //***********************************************************
 //** Check for cookie before allowing quiz editting access **
