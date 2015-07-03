@@ -48,13 +48,20 @@ block content
             h4= quiz.name
           div.quizdesc= quiz.description
           div.quizdesc.hidden
-            if quiz.score
+            if quiz.scores
               table.leaders
-                - for (var i = 0; i < 7; i++) {
-                  tr
-                    td= quiz.score[i][0]
-                    td= quiz.score[i][1]
-                - }
+                if quiz.scores.length < 7
+                  - for (var i = 0; i < (quiz.scores.length); i++) {
+                    tr
+                      td= quiz.scores[i].initials
+                      td= quiz.scores[i].score
+                  - }
+                else
+                  - for (var i = 0; i < 7; i++) {
+                    tr
+                      td= quiz.scores[i].initials
+                      td= quiz.scores[i].score
+                  - }
         div.score-button
           button.show-scores.btn.btn-xs.btn-info(type='button') 
             div.fa.fa-trophy  Leader Board

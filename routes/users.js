@@ -28,6 +28,7 @@ router.post('/users', function(req, res, next){
   validate.exists(req.body.first_name, 'First name can\'t be blank');
   validate.exists(req.body.last_name, 'Last name can\'t be blank');
   validate.exists(req.body.email, "Email can't be blank");
+  validate.exists(req.body.initials, "Initials can't be blank");
   validate.exists(req.body.password, "Please enter a password");
   validate.exists(req.body.password_confirm, "Please confirm your password");
   validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
@@ -100,11 +101,26 @@ router.post('/users/:id/update', function(req, res, next){
     res.redirect('/');
   } else {
     users.findOne({_id: req.params.id}, {}, function(err, doc){
-      if(doc && bcrypt.compareSync(req.body.password, doc.password)){
-        users.update({_id: req.params.id}, {$set: {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials}});
-        res.redirect('/quizzes');
+      var validate = new Validator;
+      validate.exists(req.body.first_name, 'First name can\'t be blank');
+      validate.exists(req.body.last_name, 'Last name can\'t be blank');
+      validate.exists(req.body.email, "Email can't be blank");
+      validate.exists(req.body.initials, "Initials can't be blank");
+      validate.exists(req.body.password, "Please enter a password");
+      validate.exists(req.body.password_confirm, "Please confirm your password");
+      validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
+      validate.maxLength(req.body.initials, 3, "Initials cannot be more than three characters")
+      if (req.body.email)
+      validate.email(req.body.email, "Invalid email format, please enter format 'example@website.com'");
+      if (validate._errors.length === 0) {
+        if(doc && bcrypt.compareSync(req.body.password, doc.password)){
+          users.update({_id: req.params.id}, {$set: {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials}});
+          res.redirect('/quizzes');
+        } else {
+          res.render('users/edit', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, errors: ['Incorrect password, please try again']});
+        }
       } else {
-        res.render('users/edit', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials});
+        res.render('users/edit', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, errors: validate._errors});
       }
     });
   }

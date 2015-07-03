@@ -21,7 +21,14 @@ router.post('/quizzes/:id/score', function(req, res, next){
   var userId = req.cookies.user_id
   if (userId){
     users.findOne({_id: userId}, {}, function (err, doc) {
-      quizzes.update({_id : req.params.id}, {$push : {score: [doc.initials, req.body.score]}});
+      quizzes.update({_id : req.params.id}, {$push :
+        {scores:
+          { $each: [{initials: doc.initials, score: req.body.score}],
+            $sort: {score: 1}
+          }
+        }
+      }
+    );
     });
   }
   res.send('ok');
