@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('./../connection');
 var quizzes = db.get('quizzes');
+var users = db.get('users');
 var Validator = require('./../lib/validator');
 var questionParser = require('./../lib/question_parser');
 
@@ -13,17 +14,18 @@ router.get('/quizzes/:id/play', function(req, res, next) {
     res.render('quizzes/play', {name: doc.name, description: doc.description, time_penalty_enabled: doc.time_penalties_enable, time_penalty: req.body.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
   });
 });
-//***********************************************************
-//** Check for cookie before allowing quiz editting access **
-//***********************************************************
-router.all('/quizzes/*', function(req, res, next){
-  var userLoggedIn = req.cookies.user_id;
-  if (userLoggedIn) {
-    next();
-  } else {
-    res.redirect('/');
+//***********
+//** SCORE **
+//***********
+router.post('/quizzes/:id/score', function(req, res, next){
+  var userId = req.cookies.user_id
+  if (userId){
+    users.findOne({_id: userId}, {}, function (err, doc) {
+      quizzes.update({_id : req.params.id}, {$push : {score: [doc.initials, req.body.score]}});
+    });
   }
-});
+  res.send('ok');
+})
 //*********
 //**INDEX**
 //*********
@@ -34,7 +36,7 @@ router.get('/quizzes', function(req, res, next) {
     if (is_ajax_request) {
       res.json(docs);
     } else {
-      res.render('quizzes', {quizzes: docs});
+      res.render('quizzes', {quizzes: docs, user_id: userId});
     }
   });
 });
@@ -93,15 +95,12 @@ router.post('/quizzes', function(req, res, next) {
 router.get('/quizzes/:id', function(req, res, next) {
   var userToken = req.cookies.user_id;
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
-    if (userToken != doc.user_id){
-      res.redirect('/');
+    var is_ajax_request = req.xhr;
+    if (is_ajax_request) {
+      res.json(doc);
     } else {
-      var is_ajax_request = req.xhr;
-      if (is_ajax_request) {
-        res.json(doc);
-      } else {
-        res.render('quizzes/show', {quiz: doc});
-      }
+
+      res.render('quizzes/show', {quiz: doc});
     }
   });
 });
@@ -115,7 +114,11 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
     if (userToken != doc.user_id){
       res.redirect('/');
     } else {
-      res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, time_penalty_enable: doc.time_penalties_enabled, time_penalty: doc.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
+      if (userToken != doc.user_id){
+        res.redirect('/');
+      } else {
+        res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, time_penalty_enable: doc.time_penalties_enabled, time_penalty: doc.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
+      }
     }
   });
 });

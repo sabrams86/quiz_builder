@@ -31,11 +31,12 @@ router.post('/users', function(req, res, next){
   validate.exists(req.body.password, "Please enter a password");
   validate.exists(req.body.password_confirm, "Please confirm your password");
   validate.compare(req.body.password, req.body.password_confirm, "Passwords do not match, please try again");
+  validate.maxLength(req.body.initials, 3, "Initials cannot be more than three characters")
   if (req.body.email)
   validate.email(req.body.email, "Invalid email format, please enter format 'example@website.com'");
   validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
   if (validate._errors.length === 0) {
-    users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, password: password}, function(err, doc){
+    users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, password: password}, function(err, doc){
       res.cookie('user_id', doc._id);
       res.redirect('/quizzes');
     });
@@ -46,14 +47,14 @@ router.post('/users', function(req, res, next){
 //***********************************************************
 //** Check for cookie before allowing quiz editting access **
 //***********************************************************
-router.all('/users/*', function(req, res, next){
-  var userLoggedIn = req.cookies.user_id;
-  if (userLoggedIn) {
-    next();
-  } else {
-    res.redirect('/');
-  }
-});
+// router.all('/users/*', function(req, res, next){
+//   var userLoggedIn = req.cookies.user_id;
+//   if (userLoggedIn) {
+//     next();
+//   } else {
+//     res.redirect('/');
+//   }
+// });
 
 //LOGOUT
 router.get('/users/logout', function(req, res, next) {
@@ -87,7 +88,7 @@ router.get('/users/:id/edit', function(req, res, next){
     if (userToken != doc._id){
       res.redirect('/');
     } else {
-    res.render('users/edit', {user: doc});
+    res.render('users/edit', {user: doc, user_id: userToken});
     }
   });
 });
@@ -98,8 +99,14 @@ router.post('/users/:id/update', function(req, res, next){
   if (userToken != req.params.id){
     res.redirect('/');
   } else {
-    users.update({_id: req.params.id}, {$set: {}});
-    res.redirect('/users/'+req.params.id);
+    users.findOne({_id: req.params.id}, {}, function(err, doc){
+      if(doc && bcrypt.compareSync(req.body.password, doc.password)){
+        users.update({_id: req.params.id}, {$set: {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials}});
+        res.redirect('/quizzes');
+      } else {
+        res.render('users/edit', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials});
+      }
+    });
   }
 });
 

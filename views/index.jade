@@ -46,9 +46,15 @@ block content
         div.info
           a(href='/quizzes/'+quiz._id+'/play')
             h4= quiz.name
-          div.quizdesc
-            div= quiz.description
-            div= quiz.scores
+          div.quizdesc= quiz.description
+          div.quizdesc.hidden
+            if quiz.score
+              table.leaders
+                - for (var i = 0; i < 7; i++) {
+                  tr
+                    td= quiz.score[i][0]
+                    td= quiz.score[i][1]
+                - }
         div.score-button
           button.show-scores.btn.btn-xs.btn-info(type='button') 
             div.fa.fa-trophy  Leader Board

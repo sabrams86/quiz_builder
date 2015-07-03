@@ -2,13 +2,16 @@ div.row
   div.col-md-6
     .row
       label.col-md-3(for='first-name') First Name
-      input#first-name.col-md-3(type='text' name='first_name' value=(firstName ? firstName : ''))
+      input#first-name.col-md-3(type='text' name='first_name' value=(user ? user.firstName : ''))
     .row
       label.col-md-3(for='last-name') Last Name
-      input#first-name.col-md-3(type='text' name='last_name' value=(lastName ? lastName : ''))
+      input#first-name.col-md-3(type='text' name='last_name' value=(user ? user.lastName : ''))
     .row
       label.col-md-3(for='email') Email
-      input#email.col-md-3(type='text' name='email' value=(email ? email : ''))     
+      input#email.col-md-3(type='text' name='email' value=(user ? user.email : ''))     
+    .row
+      label.col-md-3(for='email') Initials (for high scores)
+      input#email.col-md-3(type='text' name='initials' value=(user ? user.initials : ''))     
     .row
       label.col-md-3(for='password') Password
       input#first-name.col-md-3(type='password' name='password')
@@ -17,4 +20,4 @@ div.row
       input#first-name.col-md-3(type='password' name='password_confirm')
     .row
       .col-md-3
-      input#submit(type='submit' value='Create User')
+      input#submit(type='submit' value='Save')

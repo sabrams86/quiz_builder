@@ -138,3 +138,14 @@ a {
   bottom: 10px;
   right: 10px;
 }
+
+.leaders {
+  text-align: center;
+  margin-right: 0 auto;
+  margin-left: 0 auto;
+}
+
+.leaders td{
+  width: 100px;
+  font-size: 12px;
+}

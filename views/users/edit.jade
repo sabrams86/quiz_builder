@@ -4,5 +4,5 @@ block content
   h1 Edit User Account
   if errors
     include ./../_errors
-  form.new-user-form(action='/users/:id' method='post')
+  form.new-user-form(action='/users/'+user_id+'/update' method='post')
     include _form

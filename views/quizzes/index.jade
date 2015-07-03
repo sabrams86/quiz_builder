@@ -2,10 +2,13 @@ extends ./../layout
 
 block content
   h1 Your quizzes
-  p
-    a(href='/users/logout') Logout
-  p
-    a(href='/') Back to the Home Page
+  div.user-settings.right
+    a.btn.btn-primary.btn-info.btn-sm(href='/users/'+user_id+'/edit') 
+      div.fa.fa-gear  Edit Profile
+    p
+    p
+      a.btn.btn-danger.btn-sm(href='/users/logout') Logout
+  a(href='/') Back to the Home Page
   p
   form(action='/quizzes/new' method='get')
     button.btn.btn-primary.btn-block.btn-lg(type='submit') Make a New Quiz

@@ -54,7 +54,7 @@ $(document).ready(function() {
     var quizId = getId();
     var xhr = new XMLHttpRequest;
     //get the current quiz data
-    xhr.open('get', '/quizzes/'+quizId);
+    xhr.open('get', '/quizzes/'+quizId, true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
     xhr.addEventListener('load', function(){
       var quizData = JSON.parse(xhr.response);
@@ -132,7 +132,6 @@ $(document).ready(function() {
           clearTimeout(t);
           var totalTime = $('.timer')[0].textContent;
           $('.question-area').append('<h3>Your total time: '+totalTime+' Seconds');
-
           if (userGuess === answer.toLowerCase()) {
             score += 1;
             scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
@@ -141,9 +140,8 @@ $(document).ready(function() {
             $('.question-area').append(scoreBoard);
           } else {
             penalty += penaltyBump;
-            console.log(minutes, seconds, penalty);
             var totalScore = minutes * 60 + seconds + penalty;
-            $('.question-area').append('<h3>Your score: '+ totalScore);
+            $('.question-area').append('<h3>Your Time (with penalties): '+ totalScore);
             $('.score').remove();
             $('.question-area').prepend(loser);
             $('.question-area').append(scoreBoard);
@@ -155,6 +153,11 @@ $(document).ready(function() {
           $('.form').remove();
           $('.answer-area').append(playAgain);
           $('.answer-area').append(home);
+          var data = {"score": totalScore};
+          var scoreXhr = new XMLHttpRequest;
+          scoreXhr.open('post', '/quizzes/'+quizId+'/score', true);
+          scoreXhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          scoreXhr.send(JSON.stringify(data));
         }
       });
 
