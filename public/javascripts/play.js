@@ -134,10 +134,10 @@ $(document).ready(function() {
           $('.question-area').append('<h3>Your total time: '+totalTime+' Seconds');
           if (userGuess === answer.toLowerCase()) {
             score += 1;
-            scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
+            var totalScore = minutes * 60 + seconds + penalty;
+            $('.question-area').append('<h3>Your Time (with penalties): '+ totalScore);
             $('.score').remove();
             $('.question-area').prepend(winner);
-            $('.question-area').append(scoreBoard);
           } else {
             penalty += penaltyBump;
             var totalScore = minutes * 60 + seconds + penalty;
