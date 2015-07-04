@@ -27,6 +27,8 @@ block content
     if !user_id
       h2
         small Sign up to create your own quizzes and rank against other coders!
+  if messages
+    include _messages      
   div.clear
   nav.navbar.navbar-default
     form.navbar-form.navbar-left(action='/' method='get')

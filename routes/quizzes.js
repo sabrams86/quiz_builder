@@ -106,7 +106,6 @@ router.get('/quizzes/:id', function(req, res, next) {
     if (is_ajax_request) {
       res.json(doc);
     } else {
-
       res.render('quizzes/show', {quiz: doc});
     }
   });
@@ -119,9 +118,11 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
   var userToken = req.cookies.user_id;
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
     if (userToken != doc.user_id){
+      req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
       if (userToken != doc.user_id){
+        req.flash('info', 'You do not have access to that page');
         res.redirect('/');
       } else {
         res.render('quizzes/edit', {quiz: doc, name: doc.name, description: doc.description, time_penalty_enable: doc.time_penalties_enabled, time_penalty: doc.time_penalty, answer_penalty_enabled: doc.answer_penalties_enable, answer_penalty: req.body.answer_penalty, categories: doc.categories, questions: doc.questions});
@@ -137,6 +138,7 @@ router.post('/quizzes/:id', function(req, res, next) {
   var userToken = req.cookies.user_id;
   quizzes.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc.user_id){
+      req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
       var catArray = req.body.allcatagories.split('|');
@@ -181,6 +183,7 @@ router.post('/quizzes/:id/delete', function(req, res, next) {
   var userToken = req.cookies.user_id;
   quizzes.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc.user_id){
+      req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
       quizzes.remove({_id: req.params.id});

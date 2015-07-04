@@ -13,6 +13,7 @@ router.post('/users/login', function(req, res, next) {
       res.cookie('user_id', doc._id);
       res.redirect('/');
     } else {
+      req.flash('info', 'Email or password is incorrect, please try again');
       res.redirect('/');
     }
   });
@@ -82,6 +83,7 @@ router.get('/users/:id', function(req, res, next){
   var userToken = req.cookies.user_id;
   users.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc._id){
+      req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
       res.render('users/show', {user: doc});
@@ -94,6 +96,7 @@ router.get('/users/:id/edit', function(req, res, next){
   var userToken = req.cookies.user_id;
   users.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc._id){
+      req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
     res.render('users/edit', {user: doc, user_id: userToken});
@@ -105,6 +108,7 @@ router.get('/users/:id/edit', function(req, res, next){
 router.post('/users/:id/update', function(req, res, next){
   var userToken = req.cookies.user_id;
   if (userToken != req.params.id){
+    req.flash('info', 'You do not have access to that page');
     res.redirect('/');
   } else {
     users.findOne({_id: req.params.id}, {}, function(err, doc){
@@ -137,6 +141,7 @@ router.post('/users/:id/update', function(req, res, next){
 router.post('/users/:id/delete', function(req, res, next){
   var userToken = req.cookies.user_id;
   if (userToken != req.params.id){
+    req.flash('info', 'You do not have access to that page');
     res.redirect('/');
   } else {
     quizzes.remove({user_id: req.params.id})

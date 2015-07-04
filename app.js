@@ -4,7 +4,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-
+var session = require('express-session');
+var flash = require('connect-flash');
 require('dotenv').load();
 
 var routes = require('./routes/index');
@@ -22,10 +23,13 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 //allow file uploads with req.files
 app.use(multer({dest: './uploads/'}));
+//allow flash messages
+app.use(cookieParser('secret'));
+app.use(session({cookie: { maxAge: 60000 }}));
+app.use(flash());
 
 app.use('/', routes);
 app.use('/', quizzes);
