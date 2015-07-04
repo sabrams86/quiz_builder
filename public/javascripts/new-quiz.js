@@ -115,7 +115,7 @@ $(document).ready(function() {
       check = 2;
     }
     for (var i = 0; i < existingQuestions.length; i++){
-      if (input.toLowerCase().trim() === existingQuestions[i].textContent.toLowerCase() || input === existingQuestions[i].firstChild.src) {
+      if (input.toLowerCase().trim() === existingQuestions[i].textContent.toLowerCase()) {
         check = 1;
         break;
       }
@@ -136,7 +136,7 @@ $(document).ready(function() {
       if ($('#question-type').val() === 'image-upload') {
         var questionVal = $('#file-field').val();
       } else if ($('#question-type').val() === 'image-url') {
-        var questionVal = '<img src="'+$('#url-field').val()+'" alt="broken" height="50">';
+        var questionVal = $('#url-field').val();
       } else if ($('#question-type').val() === 'plain-text') {
         var questionVal = $('#text-field').val();
       }
