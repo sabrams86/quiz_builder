@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('./../connection');
 var users = db.get('users');
+var quizzes = db.get('quizzes');
 var bcrypt = require('bcryptjs');
 var Validator = require('./../lib/validator');
 
@@ -138,7 +139,9 @@ router.post('/users/:id/delete', function(req, res, next){
   if (userToken != req.params.id){
     res.redirect('/');
   } else {
+    quizzes.remove({user_id: req.params.id})
     users.remove({_id: req.params.id});
+    res.clearCookie('user_id');
     res.redirect('/');
   }
 });

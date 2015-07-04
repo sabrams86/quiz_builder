@@ -6,3 +6,9 @@ block content
     include ./../_errors
   form.new-user-form(action='/users/'+user_id+'/update' method='post')
     include _form
+  form.right#delete-user-form(action='/users/'+user_id+'/delete' method='post')
+    input#delete-user.btn.btn-sm.btn-danger(type='submit' value='Delete Account')
+
+block javascript
+  script(src="/javascripts/delete.js" type="text/javascript")
+  
