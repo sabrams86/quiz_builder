@@ -10,6 +10,10 @@ a {
   color: red;
   font-weight: bold;
 }
+.success-message{
+  color: green;
+  font-weight: bold;
+}
 .quizdesc{
     color: #00BBFF;
 }

@@ -43,7 +43,7 @@ router.get('/quizzes', function(req, res, next) {
     if (is_ajax_request) {
       res.json(docs);
     } else {
-      res.render('quizzes', {quizzes: docs, user_id: userId});
+      res.render('quizzes', {quizzes: docs, user_id: userId, messages: req.flash('info')});
     }
   });
 });
@@ -87,6 +87,7 @@ router.post('/quizzes', function(req, res, next) {
   validate.exists(catArray, 'Please enter a Category');
   if (validate._errors.length === 0){
     quizzes.insert({name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty, answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, user_id: userId, categories: catArray, questions: questionArray}, function(err, doc){
+      req.flash('info', 'Quiz successfully created')
       res.redirect('/quizzes/'+doc._id);
     });
   } else {
@@ -106,7 +107,7 @@ router.get('/quizzes/:id', function(req, res, next) {
     if (is_ajax_request) {
       res.json(doc);
     } else {
-      res.render('quizzes/show', {quiz: doc});
+      res.render('quizzes/show', {quiz: doc, messages: req.flash('info')});
     }
   });
 });
@@ -168,6 +169,7 @@ router.post('/quizzes/:id', function(req, res, next) {
       validate.exists(catArray, 'Please enter a Category');
       if (validate._errors.length === 0){
         quizzes.update({_id: req.params.id}, {$set: {name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty,categories: catArray, questions: questionArray}});
+        req.flash('info', 'Quiz successfully updated');
         res.redirect('/quizzes/'+req.params.id);
       } else {
         res.render('quizzes/new', {errors: validate._errors, name: req.body.name, description: req.body.description, time_penalties_enabled: req.body.time_penalty_enable, time_penalty: req.body.time_penalty,  answer_penalties_enabled: req.body.answer_penalty_enable, answer_penalty: req.body.answer_penalty, multi_upload: req.body.multi_upload, categories: catArray, questions: questionArray} )
@@ -187,6 +189,7 @@ router.post('/quizzes/:id/delete', function(req, res, next) {
       res.redirect('/');
     } else {
       quizzes.remove({_id: req.params.id});
+      req.flash('info', 'Quiz successfully deleted');
       res.redirect('/quizzes');
     }
   });

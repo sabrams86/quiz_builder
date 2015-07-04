@@ -126,6 +126,7 @@ router.post('/users/:id/update', function(req, res, next){
       if (validate._errors.length === 0) {
         if(doc && bcrypt.compareSync(req.body.password, doc.password)){
           users.update({_id: req.params.id}, {$set: {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials}});
+          req.flash('info', 'User info successfully updated');
           res.redirect('/quizzes');
         } else {
           res.render('users/edit', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, errors: ['Incorrect password, please try again']});

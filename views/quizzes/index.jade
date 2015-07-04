@@ -2,6 +2,8 @@ extends ./../layout
 
 block content
   h1 Your quizzes
+  if messages
+    include ./../_success_messages
   div.user-settings.right
     a.btn.btn-primary.btn-info.btn-sm(href='/users/'+user_id+'/edit') 
       div.fa.fa-gear  Edit Profile

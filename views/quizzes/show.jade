@@ -2,6 +2,8 @@ extends ./../layout
 
 block content
   h1= quiz.name
+  if messages
+    include ./../_success_messages
   p
     a(href='/quizzes') Back to my quizzes
   p
