@@ -49,7 +49,7 @@ router.post('/users', function(req, res, next){
     } else {
       res.render('users/new', {email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, errors: validate._errors});
     }
-  });  
+  });
 });
 //***********************************************************
 //** Check for cookie before allowing quiz editting access **
