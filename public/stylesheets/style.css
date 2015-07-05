@@ -6,20 +6,29 @@ body {
 a {
   color: #00B7FF;
 }
+.quizdesc{
+    color: #555555;
+}
 .message{
   color: red;
   font-weight: bold;
+}
+.game-message{
+  color: #555555;
+  font-weight: ligher;
 }
 .success-message{
   color: green;
   font-weight: bold;
 }
-.quizdesc{
-    color: #00BBFF;
-}
 .delete {
   cursor: pointer;
   float: right;
+}
+.timer{
+  font-size: 20px;
+  color: #555555;
+  clear:both;
 }
 
 .category-item, .question-div {

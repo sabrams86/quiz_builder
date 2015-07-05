@@ -90,8 +90,8 @@ $(document).ready(function() {
       //evaluate answer when submit button is clicked
       $(document).on('click', '.try', function(){
         event.preventDefault();
-        var winner = '<h3 class="message">Nice Work!</h3>';
-        var loser = '<h3 class="message">Sorry, that was actually '+answer+'</h3>';
+        var winner = '<h3 class="game-message">Nice Work!</h3>';
+        var loser = '<h3 class="game-message">Sorry, that was actually '+answer+'</h3>';
         var scoreBoard = '<h4 class="score">Score: '+score+' / '+maxScore+'</h4>';
         var userGuess = $('.guess').val().toLowerCase();
         //if there are still questions, evaluate and continue
@@ -100,14 +100,14 @@ $(document).ready(function() {
           if (userGuess === answer.toLowerCase()) {
             score += 1;
             scoreBoard = '<h4 class="score">Points: '+score+' / '+maxScore+'</h4>';
-            $('.message').remove();
+            $('.game-message').remove();
             $('.score').remove();
             $('.question-area').prepend(winner);
             $('.question-area').append(scoreBoard);
             //if user is wrong
           } else {
             penalty += penaltyBump;
-            $('.message').remove();
+            $('.game-message').remove();
             $('.score').remove();
             $('.question-area').prepend(loser);
             $('.question-area').append(scoreBoard);
@@ -149,7 +149,7 @@ $(document).ready(function() {
           var playAgain = '<form action="'+document.location.pathname+'" method="get"><input class="retry btn btn-primary" type="submit" name="again" value="Play Again!"></form>';
           var home = '<form action="/" method="get"><input class="btn btn-success" type="submit" name="home" value="Return to Main Page"></form>';
           $('.question').html('GAME OVER');
-          $('.message').remove();
+          $('.game-message').remove();
           $('.form').remove();
           $('.answer-area').append(playAgain);
           $('.answer-area').append(home);
