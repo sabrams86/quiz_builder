@@ -59,6 +59,7 @@ router.get('/quizzes/new', function(req, res, next) {
 //** CREATE **
 //************
 router.post('/quizzes', function(req, res, next) {
+  console.log(req.files);
   var catArray = req.body.allcatagories.split('|');
   var questionArray = JSON.parse(req.body.allquestions);
   var userId = req.cookies.user_id;
@@ -136,6 +137,8 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
 //** UPDATE **
 //************
 router.post('/quizzes/:id', function(req, res, next) {
+  console.log(req.files);
+  
   var userToken = req.cookies.user_id;
   quizzes.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc.user_id){
