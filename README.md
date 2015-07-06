@@ -4,6 +4,9 @@
 
 Check out the live working version here:  https://hidden-reef-5244.herokuapp.com/
 
+####Demo Tutorial
+This screen cast demo covers the basic functionality and usage of Flash Codes:  http://youtu.be/sOLkdsmujnE
+
 Create and play custom quizzes using plain text or image urls to help practice a subject or topic that you are trying to learn.  You can play quizzes that anyone makes and see if you're fast and smart enough to make it onto the leader board.
 
 ###Cloning
