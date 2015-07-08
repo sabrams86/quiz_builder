@@ -10,7 +10,7 @@ var Validator = require('./../lib/validator');
 router.post('/users/login', function(req, res, next) {
   users.findOne({email: req.body.email}, {}, function(err, doc){
     if(doc && bcrypt.compareSync(req.body.password, doc.password)){
-      res.cookie('user_id', doc._id);
+      req.session.user_id = doc._id;
       res.redirect('/');
     } else {
       req.flash('info', 'Email or password is incorrect, please try again');
@@ -45,7 +45,7 @@ router.post('/users', function(req, res, next){
     validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
     if (validate._errors.length === 0) {
       users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, password: password}, function(err, doc){
-        res.cookie('user_id', doc._id);
+        req.session.user_id = doc._id;
         res.redirect('/quizzes');
       });
     } else {
@@ -57,7 +57,7 @@ router.post('/users', function(req, res, next){
 //** Check for cookie before allowing quiz editting access **
 //***********************************************************
 // router.all('/users/*', function(req, res, next){
-//   var userLoggedIn = req.cookies.user_id;
+//   var userLoggedIn = req.sessions.user_id;
 //   if (userLoggedIn) {
 //     next();
 //   } else {
@@ -67,7 +67,7 @@ router.post('/users', function(req, res, next){
 
 //LOGOUT
 router.get('/users/logout', function(req, res, next) {
-  res.clearCookie('user_id');
+  req.session.user_id = null;
   res.redirect('/');
 });
 
@@ -80,7 +80,7 @@ router.get('/users', function(req, res, next) {
 
 //SHOW
 router.get('/users/:id', function(req, res, next){
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   users.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc._id){
       req.flash('info', 'You do not have access to that page');
@@ -93,7 +93,7 @@ router.get('/users/:id', function(req, res, next){
 
 //EDIT
 router.get('/users/:id/edit', function(req, res, next){
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   users.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc._id){
       req.flash('info', 'You do not have access to that page');
@@ -106,7 +106,7 @@ router.get('/users/:id/edit', function(req, res, next){
 
 //UPDATE
 router.post('/users/:id/update', function(req, res, next){
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   if (userToken != req.params.id){
     req.flash('info', 'You do not have access to that page');
     res.redirect('/');
@@ -140,14 +140,14 @@ router.post('/users/:id/update', function(req, res, next){
 
 //DELETE
 router.post('/users/:id/delete', function(req, res, next){
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   if (userToken != req.params.id){
     req.flash('info', 'You do not have access to that page');
     res.redirect('/');
   } else {
     quizzes.remove({user_id: req.params.id})
     users.remove({_id: req.params.id});
-    res.clearCookie('user_id');
+    req.session.user_id = null;
     res.redirect('/');
   }
 });

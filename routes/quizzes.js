@@ -18,7 +18,7 @@ router.get('/quizzes/:id/play', function(req, res, next) {
 //** SCORE **
 //***********
 router.post('/quizzes/:id/score', function(req, res, next){
-  var userId = req.cookies.user_id
+  var userId = req.session.user_id
   if (userId){
     users.findOne({_id: userId}, {}, function (err, doc) {
       quizzes.update({_id : req.params.id}, {$push :
@@ -37,7 +37,7 @@ router.post('/quizzes/:id/score', function(req, res, next){
 //**INDEX**
 //*********
 router.get('/quizzes', function(req, res, next) {
-  userId = req.cookies.user_id;
+  userId = req.session.user_id;
   quizzes.find({user_id: userId}, {}, function(err, docs){
     var is_ajax_request = req.xhr;
     if (is_ajax_request) {
@@ -61,7 +61,7 @@ router.get('/quizzes/new', function(req, res, next) {
 router.post('/quizzes', function(req, res, next) {
   var catArray = req.body.allcatagories.split('|');
   var questionArray = JSON.parse(req.body.allquestions);
-  var userId = req.cookies.user_id;
+  var userId = req.session.user_id;
   var validate = new Validator;
   if (req.body.multi_upload) {
     parsedCSV = questionParser.processCSV(req.body.multi_upload);
@@ -101,7 +101,7 @@ router.post('/quizzes', function(req, res, next) {
 //**SHOW **
 //*********
 router.get('/quizzes/:id', function(req, res, next) {
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
     var is_ajax_request = req.xhr;
     if (is_ajax_request) {
@@ -116,7 +116,7 @@ router.get('/quizzes/:id', function(req, res, next) {
 //** EDIT   **
 //************
 router.get('/quizzes/:id/edit', function(req, res, next) {
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   quizzes.findOne({_id : req.params.id}, {}, function(err, doc){
     if (userToken != doc.user_id){
       req.flash('info', 'You do not have access to that page');
@@ -136,7 +136,7 @@ router.get('/quizzes/:id/edit', function(req, res, next) {
 //** UPDATE **
 //************
 router.post('/quizzes/:id', function(req, res, next) {
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   quizzes.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc.user_id){
       req.flash('info', 'You do not have access to that page');
@@ -182,7 +182,7 @@ router.post('/quizzes/:id', function(req, res, next) {
 //** DELETE **
 //************
 router.post('/quizzes/:id/delete', function(req, res, next) {
-  var userToken = req.cookies.user_id;
+  var userToken = req.session.user_id;
   quizzes.findOne({_id: req.params.id}, function(err, doc){
     if (userToken != doc.user_id){
       req.flash('info', 'You do not have access to that page');

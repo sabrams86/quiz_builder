@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var session = require('express-session');
 var flash = require('connect-flash');
+
 require('dotenv').load();
 
 var routes = require('./routes/index');
@@ -30,6 +31,10 @@ app.use(multer({dest: './uploads/'}));
 app.use(cookieParser('secret'));
 app.use(session({cookie: { maxAge: 60000 }}));
 app.use(flash());
+// app.use(cookieSession({
+//   name: 'session',
+//   keys: [process.env.KEY1, process.env.KEY2, process.env.KEY3]
+// }));
 
 app.use('/', routes);
 app.use('/', quizzes);
