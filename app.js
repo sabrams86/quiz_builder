@@ -6,12 +6,19 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var session = require('express-session');
 var flash = require('connect-flash');
+var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
+
 
 require('dotenv').load();
+
+var db = require('monk')(process.env.MONGO_URI);
+var userCollection = db.get('users');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var quizzes = require('./routes/quizzes');
+var authRoutes = require('./routes/auth');
 
 var app = express();
 
@@ -31,12 +38,42 @@ app.use(multer({dest: './uploads/'}));
 app.use(cookieParser('secret'));
 app.use(session({cookie: { maxAge: 60000 }}));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 // app.use(cookieSession({
 //   name: 'session',
 //   keys: [process.env.KEY1, process.env.KEY2, process.env.KEY3]
 // }));
+// {$set: {name: profile.displayName, token: accessToken, email: profile._json.emailAddress, headline: profile._json.headline, about: profile._json.summary}}
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    callbackURL: process.env.HOST + "/auth/facebook/callback",
+    enableProof: false
+  },
+  function(accessToken, refreshToken, profile, done) {
+    userCollection.update({ facebookId: profile.id }, {$set: {firstName: profile.displayName.split(' ')[0], lastName: profile.displayName.split(' ')[1]}}, {upsert: true}, function(err, doc){
+      // req.session.user_id = doc._id;
+      return done(err, doc);
+    });
+  }
+));
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+app.use(function(req, res, next){
+  res.locals.user = req.user;  //passport sets this up
+  next();
+});
 
 app.use('/', routes);
+app.use('/', authRoutes);
 app.use('/', quizzes);
 app.use('/', users);
 
