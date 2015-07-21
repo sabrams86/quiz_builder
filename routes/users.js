@@ -7,7 +7,7 @@ var bcrypt = require('bcryptjs');
 var Validator = require('./../lib/validator');
 
 var validateUser = function(){
-  if (req.session.user_id != req.params.id){
+  if (req.session.passport.user_id != req.params.id){
     req.flash('info', 'You do not have access to that page');
     res.redirect('/');
   } else {
@@ -15,6 +15,10 @@ var validateUser = function(){
   }
 }
 
+var ensureAuthenticated = function(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login')
+}
 
 //Login
 router.post('/users/login', function(req, res, next) {
@@ -67,6 +71,7 @@ router.post('/users', function(req, res, next){
 //LOGOUT
 router.get('/users/logout', function(req, res, next) {
   req.session.user_id = null;
+  // req.logout();
   res.redirect('/');
 });
 

@@ -4,7 +4,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
-var session = require('express-session');
+var cookieSession = require('cookie-session');
 var flash = require('connect-flash');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
@@ -36,15 +36,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(multer({dest: './uploads/'}));
 //allow flash messages
 app.use(cookieParser('secret'));
-app.use(session({cookie: { maxAge: 60000 }}));
+app.set('trust proxy', 1)
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.SESSION_KEY1, process.env.SESSION_KEY2, process.env.SESSION_KEY3]
+}))
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(cookieSession({
-//   name: 'session',
-//   keys: [process.env.KEY1, process.env.KEY2, process.env.KEY3]
-// }));
-// {$set: {name: profile.displayName, token: accessToken, email: profile._json.emailAddress, headline: profile._json.headline, about: profile._json.summary}}
+
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
@@ -52,10 +52,16 @@ passport.use(new FacebookStrategy({
     enableProof: false
   },
   function(accessToken, refreshToken, profile, done) {
-    userCollection.update({ facebookId: profile.id }, {$set: {firstName: profile.displayName.split(' ')[0], lastName: profile.displayName.split(' ')[1]}}, {upsert: true}, function(err, doc){
-      // req.session.user_id = doc._id;
-      return done(err, doc);
+    userCollection.update({ facebookId: profile.id }, {$set: {accessToken: accessToken, refreshToken: refreshToken, firstName: profile.displayName.split(' ')[0], lastName: profile.displayName.split(' ')[1]}}, {upsert: true}, function(err, doc){
+    process.nextTick(function () {
+      userCollection.findOne({facebookId: profile.id}, {}, function(err,doc){
+        return done(err, {user_id: doc._id});
+      });
+      // return done(err, doc);
+    })
+
     });
+
   }
 ));
 
@@ -68,6 +74,9 @@ passport.deserializeUser(function(obj, done) {
 });
 
 app.use(function(req, res, next){
+  // if (app.locals.user){
+  //   req.session.user_id = app.locals.user;
+  // }
   res.locals.user = req.user;  //passport sets this up
   next();
 });

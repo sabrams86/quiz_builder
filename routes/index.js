@@ -6,7 +6,6 @@ var users = db.get('users');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log(req.flash('test'));
   var userId = req.session.user_id;
   var categories = req.query.categorysearch;
   var userEmail = req.query.usersearch;
