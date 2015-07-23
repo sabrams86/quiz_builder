@@ -48,7 +48,9 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
+if(app.get('env') === 'production') {
+  app.listen(3000);
+}
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
