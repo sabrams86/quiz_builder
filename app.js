@@ -4,10 +4,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var multer = require('multer');
+var bcrypt = require('bcryptjs');
 var cookieSession = require('cookie-session');
 var flash = require('connect-flash');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 
 
 require('dotenv').load();
@@ -45,6 +47,19 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    process.nextTick(function () {
+      userCollection.findOne({email: username}, function(err, user) {
+        if (err) { return done(err); }
+        if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
+        if (!bcrypt.compareSync(password, user.password)) { return done(null, false, { message: 'Invalid password' }); }
+        return done(null, {user_id: user._id});
+      });
+    });
+  }
+));
+
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
@@ -52,12 +67,11 @@ passport.use(new FacebookStrategy({
     enableProof: false
   },
   function(accessToken, refreshToken, profile, done) {
-    userCollection.update({ facebookId: profile.id }, {$set: {accessToken: accessToken, refreshToken: refreshToken, firstName: profile.displayName.split(' ')[0], lastName: profile.displayName.split(' ')[1]}}, {upsert: true}, function(err, doc){
+    userCollection.update({ facebookId: profile.id }, {$set: {accessToken: accessToken, refreshToken: refreshToken, initials: profile.displayName.split(' ')[0].charAt(0) + profile.displayName.split(' ')[1].charAt(0) , cfirstName: profile.displayName.split(' ')[0], lastName: profile.displayName.split(' ')[1]}}, {upsert: true}, function(err, doc){
     process.nextTick(function () {
       userCollection.findOne({facebookId: profile.id}, {}, function(err,doc){
         return done(err, {user_id: doc._id});
       });
-      // return done(err, doc);
     })
 
     });

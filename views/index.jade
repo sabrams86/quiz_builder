@@ -2,12 +2,12 @@ extends layout
 
 block content
   div.login-form
-    if !user_id
+    if !user
       a.right(href='/users/new') Register as a new User
       form(action='/users/login' method='post')
         p
           label.col-md-6(for='email') Email
-          input#email.col-md-6.form-control-xs(type='text' name='email')
+          input#email.col-md-6.form-control-xs(type='text' name='username')
         p
           label.col-md-6(for='password') Password
           input#password.col-md-6.form-control-xs(type='password' name='password')
@@ -17,7 +17,7 @@ block content
       p
         |Or Login With Facebook:
         a(href="/auth/facebook") Login
-    if user_id
+    if user
       div.right
         p Welcome!
         p

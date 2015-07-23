@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 var db = require('./../connection');
 var users = db.get('users');
+var passport = require('passport');
 var quizzes = db.get('quizzes');
 var bcrypt = require('bcryptjs');
 var Validator = require('./../lib/validator');
 
-var validateUser = function(){
-  if (req.session.passport.user_id != req.params.id){
+var validateUser = function(req, res, next){
+  if (req.user.user_id != req.params.id){
     req.flash('info', 'You do not have access to that page');
     res.redirect('/');
   } else {
@@ -17,21 +18,43 @@ var validateUser = function(){
 
 var ensureAuthenticated = function(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  res.redirect('/')
 }
 
-//Login
 router.post('/users/login', function(req, res, next) {
-  users.findOne({email: req.body.email}, {}, function(err, doc){
-    if(doc && bcrypt.compareSync(req.body.password, doc.password)){
-      req.session.user_id = doc._id;
-      res.redirect('/');
-    } else {
-      req.flash('info', 'Email or password is incorrect, please try again');
-      res.redirect('/');
+  passport.authenticate('local', function(err, user, info) {
+    console.log(err, user, info);
+    if (err) { return next(err) }
+    if (!user) {
+      req.flash('error', info.message);
+      return res.redirect('/')
     }
-  });
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.redirect('/');
+    });
+  })(req, res, next);
 });
+
+// router.post('/users/login',
+//   passport.authenticate('local', { failureRedirect: '/', failureFlash: true }),
+//   function(req, res) {
+//     console.log('asdf');
+//     res.redirect('/');
+//   });
+
+//Login
+  // router.post('/users/login', function(req, res, next) {
+  //   users.findOne({email: req.body.email}, {}, function(err, doc){
+  //     if(doc && bcrypt.compareSync(req.body.password, doc.password)){
+  //       req.user.user_id = doc._id;
+  //       res.redirect('/');
+  //     } else {
+  //       req.flash('info', 'Email or password is incorrect, please try again');
+  //       res.redirect('/');
+  //     }
+  //   });
+  // });
 //NEW
 router.get('/users/new', function(req, res, next) {
   res.render('users/new');
@@ -59,7 +82,7 @@ router.post('/users', function(req, res, next){
     validate.length(req.body.password, 8, "Password must be a minimum of 8 characters");
     if (validate._errors.length === 0) {
       users.insert({email: req.body.email, firstName: req.body.first_name, lastName: req.body.last_name, initials: req.body.initials, password: password}, function(err, doc){
-        req.session.user_id = doc._id;
+        req.user.user_id = doc._id;
         res.redirect('/quizzes');
       });
     } else {
@@ -70,8 +93,8 @@ router.post('/users', function(req, res, next){
 
 //LOGOUT
 router.get('/users/logout', function(req, res, next) {
-  req.session.user_id = null;
-  // req.logout();
+  req.user.user_id = null;
+  req.logout();
   res.redirect('/');
 });
 
@@ -85,7 +108,7 @@ router.get('/users', function(req, res, next) {
 //SHOW
 router.get('/users/:id', function(req, res, next){
   users.findOne({_id: req.params.id}, function(err, doc){
-    if (req.session.user_id != doc._id){
+    if (req.user.user_id != doc._id){
       req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
@@ -97,11 +120,11 @@ router.get('/users/:id', function(req, res, next){
 //EDIT
 router.get('/users/:id/edit', function(req, res, next){
   users.findOne({_id: req.params.id}, function(err, doc){
-    if (req.session.user_id != doc._id){
+    if (req.user.user_id != doc._id){
       req.flash('info', 'You do not have access to that page');
       res.redirect('/');
     } else {
-    res.render('users/edit', {user: doc, user_id: req.session.user_id});
+    res.render('users/edit', {user: doc, user_id: req.user.user_id});
     }
   });
 });
@@ -138,7 +161,7 @@ router.post('/users/:id/update', validateUser, function(req, res, next){
 router.post('/users/:id/delete', validateUser, function(req, res, next){
   quizzes.remove({user_id: req.params.id})
   users.remove({_id: req.params.id});
-  req.session.user_id = null;
+  req.user.user_id = null;
   res.redirect('/');
 });
 

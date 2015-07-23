@@ -6,7 +6,8 @@ var users = db.get('users');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var userId = req.session.user_id;
+  console.log(req.session);
+  var userId = req.session.passport.user_id;
   var categories = req.query.categorysearch;
   var userEmail = req.query.usersearch;
   var searchParams;

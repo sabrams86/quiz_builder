@@ -4,12 +4,17 @@ block content
   h1 Your quizzes
   if messages
     include ./../_success_messages
-  div.user-settings.right
-    a.btn.btn-primary.btn-info.btn-sm(href='/users/'+user_id+'/edit') 
-      div.fa.fa-gear  Edit Profile
-    p
-    p
+  if !facebookUser
+    div.user-settings.right
+      a.btn.btn-primary.btn-info.btn-sm(href='/users/'+user_id+'/edit') 
+        div.fa.fa-gear  Edit Profile
+      p
+      p
+        a.btn.btn-danger.btn-sm(href='/users/logout') Logout
+  else
+    div.user-settings.right
       a.btn.btn-danger.btn-sm(href='/users/logout') Logout
+      
   a(href='/') Back to the Home Page
   p
   form(action='/quizzes/new' method='get')

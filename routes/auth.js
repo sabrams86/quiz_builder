@@ -15,7 +15,6 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', {
   }),
   function(req, res) {
     // Successful authentication, redirect home.
-    // req.session.user_id = app.locals.user;
     console.log(req.session);
     res.redirect('/');
   });
